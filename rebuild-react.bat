@@ -1,0 +1,1 @@
+docker build -t astera-frontend:local ./frontend/
