@@ -1,0 +1,19 @@
+# Node / frontend
+node_modules/
+dist/
+.build/
+.vite/
+*.log
+
+# Java / backend
+target/
+.idea/
+*.iml
+*.class
+.DS_Store
+
+# Docker
+*.env.local
+
+# OS
+Thumbs.db
