@@ -1,0 +1,171 @@
+.sidebar {
+  --sidebar-w: 280px;
+  --sidebar-w-collapsed: 72px;
+
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+
+  background: var(--color-bg-elev);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border-right: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: width var(--tr-fast);
+
+  display: flex;
+  flex-direction: column;
+
+  &.collapsed {
+    width: var(--sidebar-w-collapsed);
+
+    .brand-meta { display: none; }
+    .label { display: none; }
+  }
+
+  &__header {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &__brand {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    align-items: center;
+    gap: var(--gap-md);
+  }
+
+  .logo {
+    height: 40px; width: 40px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, var(--color-primary), var(--color-primary-600));
+    color: #fff;
+    display: grid; place-items: center;
+    font-weight: 800;
+    box-shadow: var(--shadow-sm);
+    letter-spacing: .5px;
+  }
+
+  .brand-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .user-name {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--color-muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  &__nav {
+    padding: 8px;
+    overflow-y: auto;
+
+    ul {
+      margin: 0; padding: 0; list-style: none;
+      display: grid; gap: 4px;
+    }
+
+    li.logout {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--color-border);
+    }
+
+    .nav-link {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: center;
+      gap: 12px;
+
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+
+      background: transparent;
+      color: var(--color-muted);
+      text-decoration: none;
+      cursor: pointer;
+
+      transition: background var(--tr-fast), color var(--tr-fast), border-color var(--tr-fast), transform var(--tr-fast);
+
+      .nav-icon { display: inline-block; }
+
+      &:hover {
+        background: var(--color-bg);
+        color: var(--color-text);
+        border-color: var(--color-border);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      &.active {
+        background: color-mix(in srgb, var(--color-primary) 12%, var(--color-bg));
+        border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+        color: color-mix(in srgb, var(--color-text) 90%, var(--color-primary));
+      }
+
+      &.danger, &.danger:hover {
+        color: #fff;
+      }
+    }
+
+    /* Кнопка выхода — заметная, но аккуратная */
+    .danger {
+      background: color-mix(in srgb, #ef4444 20%, var(--color-bg));
+      border-color: color-mix(in srgb, #ef4444 30%, var(--color-border));
+
+      &:hover {
+        background: color-mix(in srgb, #ef4444 40%, var(--color-bg));
+        border-color: color-mix(in srgb, #ef4444 55%, var(--color-border));
+      }
+    }
+  }
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--tr-fast);
+  z-index: calc(var(--z-header) - 1);
+
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100dvh;
+    transform: translateX(-100%);
+    transition: transform var(--tr-fast), width var(--tr-fast);
+    z-index: var(--z-header);
+
+    &.collapsed { /* закрыт на мобилке */
+      transform: translateX(-100%);
+      width: var(--sidebar-w); /* внутри считаем ширину полной панели */
+    }
+
+    &:not(.collapsed) { /* открыт на мобилке */
+      transform: translateX(0);
+    }
+  }
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
