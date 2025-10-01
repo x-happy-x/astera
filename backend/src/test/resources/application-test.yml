@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testdb
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+
+app:
+  jwt:
+    secret: test-secret-key-for-testing-only
+    expiration: 3600000
+
+logging:
+  level:
+    org.springframework: INFO
+    org.springframework.security: WARN
+    com.github.dockerjava: WARN
+    org.hibernate.SQL: DEBUG
+    ru.astera.backend: DEBUG
