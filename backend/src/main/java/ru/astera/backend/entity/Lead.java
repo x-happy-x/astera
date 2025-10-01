@@ -1,11 +1,13 @@
 package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -20,8 +22,7 @@ import java.util.UUID;
 public class Lead {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @UuidGenerator
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
@@ -31,8 +32,7 @@ public class Lead {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @JdbcTypeCode(SqlTypes.OTHER)
-    @Column(name = "email", nullable = false, columnDefinition = "citext")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "organization", nullable = false)
@@ -41,8 +41,9 @@ public class Lead {
     @Column(name = "consent_personal_data", nullable = false)
     private Boolean consentPersonalData;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    private OffsetDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_manager_id")

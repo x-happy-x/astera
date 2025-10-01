@@ -1,5 +1,4 @@
 -- V1__init_schema.sql
-CREATE EXTENSION IF NOT EXISTS citext;
 
 -- Enum equipment_category (создание идемпотентно через DO-блок)
 DO
@@ -16,12 +15,12 @@ $$;
 CREATE TABLE IF NOT EXISTS users
 (
     id            UUID PRIMARY KEY,
-    email         CITEXT UNIQUE NOT NULL,
-    full_name     TEXT          NOT NULL,
-    role          TEXT          NOT NULL CHECK (role IN ('manager', 'admin')),
+    email         VARCHAR(255) UNIQUE NOT NULL,
+    full_name     TEXT                NOT NULL,
+    role          TEXT                NOT NULL CHECK (role IN ('manager', 'admin')),
     password_hash TEXT,
-    is_active     BOOLEAN       NOT NULL DEFAULT TRUE,
-    created_at    TIMESTAMPTZ   NOT NULL DEFAULT now()
+    is_active     BOOLEAN             NOT NULL DEFAULT TRUE,
+    created_at    TIMESTAMPTZ         NOT NULL DEFAULT now()
 );
 COMMENT ON TABLE users IS 'Пользователи системы (менеджеры/админы).';
 COMMENT ON COLUMN users.id IS 'Первичный ключ пользователя (UUID).';
@@ -36,13 +35,13 @@ COMMENT ON COLUMN users.created_at IS 'Метка времени создани�
 CREATE TABLE IF NOT EXISTS leads
 (
     id                    UUID PRIMARY KEY,
-    full_name             TEXT        NOT NULL,
-    phone                 TEXT        NOT NULL,
-    email                 CITEXT      NOT NULL,
-    organization          TEXT        NOT NULL,
-    consent_personal_data BOOLEAN     NOT NULL,
-    created_at            TIMESTAMPTZ NOT NULL DEFAULT now(),
-    assigned_manager_id   UUID        NULL REFERENCES users (id),
+    full_name             TEXT         NOT NULL,
+    phone                 TEXT         NOT NULL,
+    email                 VARCHAR(255) NOT NULL,
+    organization          TEXT         NOT NULL,
+    consent_personal_data BOOLEAN      NOT NULL,
+    created_at            TIMESTAMPTZ  NOT NULL DEFAULT now(),
+    assigned_manager_id   UUID         NULL REFERENCES users (id),
     CONSTRAINT uq_lead_contact UNIQUE (email, phone)
 );
 COMMENT ON TABLE leads IS 'Лиды/клиенты, введённые через Форму №1.';

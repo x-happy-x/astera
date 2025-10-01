@@ -2,13 +2,14 @@
 
 -- Пользователи (пароль admin: $2a$10$YcZYZNkZJL9Y3HBqZzZQ.O7XvZvZLqZ2qZ3qZ4qZ5qZ6qZ7qZ8qZ9q)
 INSERT INTO users (id, email, full_name, role, password_hash, is_active)
-VALUES ('11111111-1111-1111-1111-111111111111', 'admin@example.com', 'Администратор', 'admin', '$2a$10$YcZYZNkZJL9Y3HBqZzZQ.O7XvZvZLqZ2qZ3qZ4qZ5qZ6qZ7qZ8qZ9q', TRUE),
+VALUES ('11111111-1111-1111-1111-111111111111', 'admin@example.com', 'Администратор', 'admin',
+        '$2a$10$YcZYZNkZJL9Y3HBqZzZQ.O7XvZvZLqZ2qZ3qZ4qZ5qZ6qZ7qZ8qZ9q', TRUE),
        ('22222222-2222-2222-2222-222222222222', 'manager@example.com', 'Менеджер Теплообмен', 'manager', NULL, TRUE)
 ON CONFLICT (email) DO UPDATE
-    SET full_name = EXCLUDED.full_name,
-        role      = EXCLUDED.role,
+    SET full_name     = EXCLUDED.full_name,
+        role          = EXCLUDED.role,
         password_hash = EXCLUDED.password_hash,
-        is_active = EXCLUDED.is_active;
+        is_active     = EXCLUDED.is_active;
 
 -- Ключи совместимости: DN80_GAS_STD, DN100_GAS_STD
 -- Категории: boiler, burner, pump, valve, flowmeter, automation

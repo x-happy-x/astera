@@ -1,11 +1,13 @@
 package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -18,33 +20,32 @@ import java.util.UUID;
 @ToString
 @RequiredArgsConstructor
 public class User {
-    
+
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @UuidGenerator
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @JdbcTypeCode(SqlTypes.OTHER)
-    @Column(name = "email", nullable = false, unique = true, columnDefinition = "citext")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-    
+
     @Column(name = "full_name", nullable = false)
     private String fullName;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
-    
+
     @Column(name = "password_hash")
     private String passwordHash;
-    
+
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
-    
+
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
-    
+    private OffsetDateTime createdAt;
+
     public enum Role {
         admin, manager
     }

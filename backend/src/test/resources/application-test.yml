@@ -6,11 +6,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     show-sql: false
     properties:
       hibernate:
         format_sql: true
+        show_sql: false
 
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
@@ -26,8 +27,8 @@ app:
 
 logging:
   level:
-    org.springframework: INFO
+    org.springframework: WARN
     org.springframework.security: WARN
     com.github.dockerjava: WARN
-    org.hibernate.SQL: DEBUG
-    ru.astera.backend: DEBUG
+    org.hibernate.SQL: WARN
+    ru.astera.backend: WARN
