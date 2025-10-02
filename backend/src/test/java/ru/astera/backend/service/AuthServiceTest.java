@@ -35,7 +35,7 @@ class AuthServiceTest {
     ObjectMapper objectMapper;
 
     @InjectMocks
-    AuthService authService;
+    AuthServiceImpl authService;
 
     private final UUID USER_ID = UUID.randomUUID();
 
@@ -256,7 +256,7 @@ class AuthServiceTest {
         @Test
         @DisplayName("успех: создаёт профиль и возвращает CustomerResponseDto")
         void register_customer_success() {
-            var req = new ClientRegistrationDto();
+            var req = new CustomerRegistrationDto();
             req.setEmail("cust@ex.com");
             req.setFullName("Клиент");
             req.setPhone("+7 900 111-22-33");

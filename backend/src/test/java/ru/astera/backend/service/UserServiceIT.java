@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import ru.astera.backend.config.TestContainersConfig;
-import ru.astera.backend.dto.registration.ClientRegistrationDto;
+import ru.astera.backend.dto.registration.CustomerRegistrationDto;
 import ru.astera.backend.dto.registration.ManagerRegistrationDto;
 import ru.astera.backend.entity.User;
 import ru.astera.backend.exception.UserAlreadyExistsException;
@@ -40,8 +40,8 @@ class UserServiceIT {
         return dto;
     }
 
-    private ClientRegistrationDto customerDto(String email) {
-        return ClientRegistrationDto.builder()
+    private CustomerRegistrationDto customerDto(String email) {
+        return CustomerRegistrationDto.builder()
                 .email(email)
                 .fullName("Клиент Клиентов")
                 .organization("ООО Клиент")

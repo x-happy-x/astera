@@ -131,7 +131,7 @@ class AuthControllerTest {
 
     @Test
     void customerRegister_Success() throws Exception {
-        var req = new ClientRegistrationDto();
+        var req = new CustomerRegistrationDto();
         req.setEmail("cust@example.com");
         req.setFullName("Клиент");
         req.setOrganization("ООО Ромашка");
@@ -147,7 +147,7 @@ class AuthControllerTest {
         resp.setPhone("+7 900 111-22-33");
         resp.setOrganization("ООО Ромашка");
 
-        when(authService.registerCustomer(any(ClientRegistrationDto.class))).thenReturn(resp);
+        when(authService.registerCustomer(any(CustomerRegistrationDto.class))).thenReturn(resp);
 
         mockMvc.perform(post("/api/auth/customer/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +162,7 @@ class AuthControllerTest {
 
     @Test
     void customerRegister_ValidationError() throws Exception {
-        var req = new ClientRegistrationDto();
+        var req = new CustomerRegistrationDto();
         req.setEmail("");          // invalid
         req.setFullName("");       // invalid
         req.setOrganization("");   // invalid

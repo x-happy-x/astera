@@ -1,6 +1,7 @@
 package ru.astera.backend.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/selection")
 @Validated
+
+@RequiredArgsConstructor
 public class ConfigurationSelectionController {
 
     private final ConfigurationSelectionService selectionService;
     private final SelectionMapper selectionMapper;
-
-    public ConfigurationSelectionController(ConfigurationSelectionService selectionService,
-                                            SelectionMapper selectionMapper) {
-        this.selectionService = selectionService;
-        this.selectionMapper = selectionMapper;
-    }
 
     @PostMapping("/configurations")
     public ResponseEntity<List<ConfigurationCandidateDto>> select(@Valid @RequestBody SelectionQueryDto query) {

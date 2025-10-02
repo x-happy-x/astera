@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import ru.astera.backend.config.TestContainersConfig;
-import ru.astera.backend.dto.registration.ClientRegistrationDto;
+import ru.astera.backend.dto.registration.CustomerRegistrationDto;
 import ru.astera.backend.entity.CustomerProfile;
 import ru.astera.backend.entity.User;
-import ru.astera.backend.exception.LeadAlreadyExistsException;
+import ru.astera.backend.exception.CustomerAlreadyExistsException;
 import ru.astera.backend.repository.CustomerProfileRepository;
 import ru.astera.backend.repository.UserRepository;
 
@@ -45,8 +45,8 @@ class CustomerServiceIT {
         userRepository.deleteAll();
     }
 
-    private ClientRegistrationDto sampleDto(String email) {
-        return ClientRegistrationDto.builder()
+    private CustomerRegistrationDto sampleDto(String email) {
+        return CustomerRegistrationDto.builder()
                 .fullName("Иван Иванов")
                 .phone("+7 900 123-45-67")
                 .email(email)
@@ -79,12 +79,12 @@ class CustomerServiceIT {
     }
 
     @Test
-    @DisplayName("При сохранении клиента выбрасывается LeadAlreadyExistsException если email уже занят")
+    @DisplayName("При сохранении клиента выбрасывается CustomerAlreadyExistsException если email уже занят")
     void registerCustomer_throwsWhenEmailExists() {
         userService.createCustomer(sampleDto("dup@ex.com"));
 
         assertThatThrownBy(() -> customerService.registerCustomer(sampleDto("dup@ex.com")))
-                .isInstanceOf(LeadAlreadyExistsException.class)
+                .isInstanceOf(CustomerAlreadyExistsException.class)
                 .hasMessageContaining("Пользователь с такой почтой уже зарегистрирован");
     }
 

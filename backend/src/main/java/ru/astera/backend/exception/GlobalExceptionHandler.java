@@ -17,37 +17,35 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(UserAlreadyExistsException ex) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                ex.getMessage(),
-                OffsetDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    @ExceptionHandler({
+            CustomerNotFoundException.class,
+            EquipmentNotFoundException.class
+    })
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExists(Exception ex) {
+        log.warn("Not found error", ex);
+        return handleException(ex, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(LeadAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleLeadAlreadyExists(LeadAlreadyExistsException ex) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.CONFLICT.value(),
-                ex.getMessage(),
-                OffsetDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    @ExceptionHandler({
+            CustomerAlreadyExistsException.class,
+            UserAlreadyExistsException.class,
+            EquipmentAlreadyExistsException.class
+    })
+    public ResponseEntity<ErrorResponse> handleConflicts(Exception ex) {
+        log.warn("Conflict error", ex);
+        return handleException(ex, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.UNAUTHORIZED.value(),
-                ex.getMessage(),
-                OffsetDateTime.now()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        log.warn("Invalid credentials", ex);
+        return handleException(ex, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            BindException.class
+    })
     public ResponseEntity<ValidationErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -62,28 +60,30 @@ public class GlobalExceptionHandler {
                 OffsetDateTime.now(),
                 errors
         );
-
+        log.warn("Validation error", ex);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class})
+    @ExceptionHandler({
+            IllegalArgumentException.class
+    })
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                ex.getMessage(),
-                OffsetDateTime.now()
-        );
-        return ResponseEntity.badRequest().body(error);
+        log.warn("Bad request", ex);
+        return handleException(ex, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
+        log.error("Internal server error", ex);
+        return handleException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private static ResponseEntity<ErrorResponse> handleException(Exception ex, HttpStatus status) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Внутренняя ошибка сервера",
+                status.value(),
+                ex.getMessage(),
                 OffsetDateTime.now()
         );
-        log.error("Internal server error", ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(status).body(error);
     }
 }

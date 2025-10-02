@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClientRegistrationDto {
+public class CustomerRegistrationDto {
 
     @NotBlank(message = "ФИО обязательно для заполнения")
     private String fullName;
