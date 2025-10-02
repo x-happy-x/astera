@@ -2,6 +2,7 @@ package ru.astera.backend.dto.selection;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.astera.backend.entity.FuelType;
 
 import java.math.BigDecimal;
 
@@ -15,5 +16,4 @@ public class SelectionQueryDto {
 
     private Integer topN = 3;
     private Boolean includeAutomation = true;
-
 }

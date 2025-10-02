@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.astera.backend.dto.admin.*;
+import ru.astera.backend.dto.admin.EquipmentCreateDto;
+import ru.astera.backend.dto.admin.EquipmentDto;
+import ru.astera.backend.dto.admin.EquipmentPageDto;
+import ru.astera.backend.dto.admin.EquipmentUpdateDto;
 import ru.astera.backend.entity.Equipment;
 import ru.astera.backend.exception.EquipmentNotFoundException;
 import ru.astera.backend.repository.EquipmentRepository;
+import ru.astera.backend.service.EquipmentService;
 
 import java.util.List;
 import java.util.UUID;
@@ -88,7 +92,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         dto.setCategory(equipment.getCategory());
         dto.setBrand(equipment.getBrand());
         dto.setModel(equipment.getModel());
-        dto.setActive(equipment.getActive());
+        dto.setActive(equipment.isActive());
         dto.setPowerMinKw(equipment.getPowerMinKw());
         dto.setPowerMaxKw(equipment.getPowerMaxKw());
         dto.setFlowMinM3h(equipment.getFlowMinM3h());

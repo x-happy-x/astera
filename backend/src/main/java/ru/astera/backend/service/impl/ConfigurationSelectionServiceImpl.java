@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -9,10 +9,14 @@ import ru.astera.backend.dto.selection.HeatingRequestDto;
 import ru.astera.backend.entity.Equipment;
 import ru.astera.backend.mapper.EquipmentMapper;
 import ru.astera.backend.repository.EquipmentRepository;
+import ru.astera.backend.service.ConfigurationSelectionService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +26,7 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
     private final EquipmentMapper equipmentMapper;
 
     public ConfigurationSelectionServiceImpl(EquipmentRepository equipmentRepo,
-                                         EquipmentMapper equipmentMapper) {
+                                             EquipmentMapper equipmentMapper) {
         this.equipmentRepo = equipmentRepo;
         this.equipmentMapper = equipmentMapper;
     }
@@ -34,14 +38,14 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
                                                                    boolean includeAutomation) {
         validate(req);
 
-        BigDecimal deltaT = req.getTIn().subtract(req.getTOut());
+        BigDecimal deltaT = req.tIn().subtract(req.tOut());
         BigDecimal flow = new BigDecimal("0.86")
-                .multiply(req.getPowerKw())
+                .multiply(req.powerKw())
                 .divide(deltaT, 6, RoundingMode.HALF_UP);
 
         List<EquipmentRepository.BoilerBurnerPair> pairs =
-                equipmentRepo.findBoilerBurnerPairs(req.getPowerKw(),
-                        req.getFuelType().name().toLowerCase(),
+                equipmentRepo.findBoilerBurnerPairs(req.powerKw(),
+                        req.fuelType().name().toLowerCase(),
                         PageRequest.of(0, 20));
 
         List<ConfigurationCandidateDto> candidates = new ArrayList<>();
@@ -52,8 +56,8 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
                 continue;
             }
 
-            Optional<Equipment> optPump      = equipmentRepo.findCheapestPump(flow);
-            Optional<Equipment> optValve     = equipmentRepo.findCheapestValve(dn);
+            Optional<Equipment> optPump = equipmentRepo.findCheapestPump(flow);
+            Optional<Equipment> optValve = equipmentRepo.findCheapestValve(dn);
             Optional<Equipment> optFlowmeter = equipmentRepo.findCheapestFlowmeter(dn);
 
             if (optPump.isEmpty() || optValve.isEmpty() || optFlowmeter.isEmpty()) {
@@ -91,7 +95,7 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
                     .collect(Collectors.toList());
 
             ConfigurationCandidateDto candidate = new ConfigurationCandidateDto();
-            candidate.setRequestId(req.getId());
+            candidate.setRequestId(req.id());
             candidate.setTotalPrice(total);
             candidate.setCurrency("RUB");
             candidate.setMaxDeliveryDays(maxDeliveryDays);
@@ -113,16 +117,16 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
     }
 
     private void validate(HeatingRequestDto req) {
-        if (req.getPowerKw() == null || req.getPowerKw().compareTo(BigDecimal.ZERO) <= 0) {
+        if (req.powerKw() == null || req.powerKw().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("power_kw должен быть > 0");
         }
-        if (req.getTIn() == null || req.getTOut() == null) {
+        if (req.tIn() == null || req.tOut() == null) {
             throw new IllegalArgumentException("t_in и t_out обязательны");
         }
-        if (req.getTIn().compareTo(req.getTOut()) <= 0) {
+        if (req.tIn().compareTo(req.tOut()) <= 0) {
             throw new IllegalArgumentException("t_in должен быть больше t_out");
         }
-        if (req.getFuelType() == null) {
+        if (req.fuelType() == null) {
             throw new IllegalArgumentException("fuel_type обязателен");
         }
     }

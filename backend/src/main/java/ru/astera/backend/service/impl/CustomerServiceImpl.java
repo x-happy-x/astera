@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -20,6 +20,8 @@ import ru.astera.backend.exception.CustomerNotFoundException;
 import ru.astera.backend.exception.UserAlreadyExistsException;
 import ru.astera.backend.repository.CustomerProfileRepository;
 import ru.astera.backend.repository.UserRepository;
+import ru.astera.backend.service.CustomerService;
+import ru.astera.backend.service.UserService;
 
 import java.util.UUID;
 

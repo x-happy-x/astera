@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.astera.backend.service.JwtService;
 
 import java.security.Key;
 import java.util.Date;

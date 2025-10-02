@@ -22,6 +22,7 @@ import ru.astera.backend.entity.User;
 import ru.astera.backend.exception.UserAlreadyExistsException;
 import ru.astera.backend.repository.CustomerProfileRepository;
 import ru.astera.backend.repository.UserRepository;
+import ru.astera.backend.service.impl.CustomerServiceImpl;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;

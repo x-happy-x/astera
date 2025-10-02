@@ -5,7 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import ru.astera.backend.entity.Equipment;
+import ru.astera.backend.entity.EquipmentCategory;
+import ru.astera.backend.entity.FuelType;
 
 import java.math.BigDecimal;
 
@@ -13,7 +14,7 @@ import java.math.BigDecimal;
 public class EquipmentUpdateDto {
     @NotNull(message = "Category is required")
     @JsonProperty("category")
-    private Equipment.EquipmentCategory category;
+    private EquipmentCategory category;
 
     @NotBlank(message = "Brand is required")
     @JsonProperty("brand")
@@ -42,7 +43,7 @@ public class EquipmentUpdateDto {
     private Integer dnSize;
 
     @JsonProperty("fuelType")
-    private String fuelType;
+    private FuelType fuelType;
 
     @JsonProperty("connectionKey")
     private String connectionKey;

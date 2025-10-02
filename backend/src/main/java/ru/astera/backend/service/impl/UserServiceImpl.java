@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -8,6 +8,7 @@ import ru.astera.backend.dto.registration.ManagerRegistrationDto;
 import ru.astera.backend.entity.User;
 import ru.astera.backend.exception.UserAlreadyExistsException;
 import ru.astera.backend.repository.UserRepository;
+import ru.astera.backend.service.UserService;
 
 @Service
 @RequiredArgsConstructor

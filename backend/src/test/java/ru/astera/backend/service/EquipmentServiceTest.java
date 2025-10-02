@@ -14,8 +14,10 @@ import ru.astera.backend.dto.admin.EquipmentDto;
 import ru.astera.backend.dto.admin.EquipmentPageDto;
 import ru.astera.backend.dto.admin.EquipmentUpdateDto;
 import ru.astera.backend.entity.Equipment;
+import ru.astera.backend.entity.EquipmentCategory;
 import ru.astera.backend.exception.EquipmentNotFoundException;
 import ru.astera.backend.repository.EquipmentRepository;
+import ru.astera.backend.service.impl.EquipmentServiceImpl;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -72,7 +74,7 @@ class EquipmentServiceTest {
         assertEquals(equipmentId, result.getId());
         assertEquals("Bosch", result.getBrand());
         assertEquals("Model1", result.getModel());
-        assertEquals(Equipment.EquipmentCategory.boiler, result.getCategory());
+        assertEquals(EquipmentCategory.boiler, result.getCategory());
     }
 
     @Test
@@ -94,7 +96,7 @@ class EquipmentServiceTest {
         assertNotNull(result);
         assertEquals("Bosch", result.getBrand());
         assertEquals("Model1", result.getModel());
-        assertEquals(Equipment.EquipmentCategory.boiler, result.getCategory());
+        assertEquals(EquipmentCategory.boiler, result.getCategory());
         verify(equipmentRepository, times(1)).save(any(Equipment.class));
     }
 
@@ -146,7 +148,7 @@ class EquipmentServiceTest {
     private Equipment createTestEquipment(UUID id) {
         Equipment equipment = new Equipment();
         equipment.setId(id);
-        equipment.setCategory(Equipment.EquipmentCategory.boiler);
+        equipment.setCategory(EquipmentCategory.boiler);
         equipment.setBrand("Bosch");
         equipment.setModel("Model1");
         equipment.setActive(true);
@@ -161,7 +163,7 @@ class EquipmentServiceTest {
 
     private EquipmentCreateDto createTestEquipmentCreateDto() {
         EquipmentCreateDto dto = new EquipmentCreateDto();
-        dto.setCategory(Equipment.EquipmentCategory.boiler);
+        dto.setCategory(EquipmentCategory.boiler);
         dto.setBrand("Bosch");
         dto.setModel("Model1");
         dto.setActive(true);
@@ -176,7 +178,7 @@ class EquipmentServiceTest {
 
     private EquipmentUpdateDto createTestEquipmentUpdateDto() {
         EquipmentUpdateDto dto = new EquipmentUpdateDto();
-        dto.setCategory(Equipment.EquipmentCategory.boiler);
+        dto.setCategory(EquipmentCategory.boiler);
         dto.setBrand("Bosch");
         dto.setModel("Model1");
         dto.setActive(true);

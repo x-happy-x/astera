@@ -13,6 +13,7 @@ import ru.astera.backend.dto.registration.*;
 import ru.astera.backend.entity.CustomerProfile;
 import ru.astera.backend.entity.User;
 import ru.astera.backend.exception.InvalidCredentialsException;
+import ru.astera.backend.service.impl.AuthServiceImpl;
 
 import java.util.UUID;
 

@@ -1,41 +1,40 @@
 package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
-@Setter
-@Getter
 @Entity
-@Table(name = "equipment")
+@Table(name = "equipment",
+        uniqueConstraints = @UniqueConstraint(name = "uq_equipment_brand_model", columnNames = {"brand", "model"}))
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotNull(message = "Category is required")
     @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
+    @Column(nullable = false, columnDefinition = "equipment_category")
     private EquipmentCategory category;
 
-    @NotBlank(message = "Brand is required")
-    @Column(name = "brand", nullable = false)
+    @Column(nullable = false)
     private String brand;
 
-    @NotBlank(message = "Model is required")
-    @Column(name = "model", nullable = false)
+    @Column(nullable = false)
     private String model;
 
-    @NotNull(message = "Active status is required")
-    @Column(name = "active", nullable = false)
-    private Boolean active = true;
+    @Column(nullable = false)
+    private boolean active = true;
 
     @Column(name = "power_min_kw", precision = 10, scale = 2)
     private BigDecimal powerMinKw;
@@ -52,46 +51,38 @@ public class Equipment {
     @Column(name = "dn_size")
     private Integer dnSize;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "fuel_type")
-    private String fuelType;
+    private FuelType fuelType;
 
     @Column(name = "connection_key")
     private String connectionKey;
 
-    @NotNull(message = "Price is required")
-    @Positive(message = "Price must be positive")
-    @Column(name = "price", nullable = false, precision = 14, scale = 2)
+    @Column(nullable = false, precision = 14, scale = 2)
     private BigDecimal price;
 
     @Column(name = "delivery_days")
     private Integer deliveryDays;
 
-    public Equipment() {}
-
-    public Equipment(EquipmentCategory category, String brand, String model, BigDecimal price) {
-        this.category = category;
-        this.brand = brand;
-        this.model = model;
-        this.price = price;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) {
+            return false;
+        }
+        Equipment equipment = (Equipment) o;
+        return getId() != null && Objects.equals(getId(), equipment.getId());
     }
 
-    public enum EquipmentCategory {
-        boiler("Котел"),
-        burner("Горелка"),
-        pump("Насос"),
-        valve("Клапан"),
-        flowmeter("Расходомер"),
-        automation("Автоматика");
-
-        private final String displayName;
-
-        EquipmentCategory(String displayName) {
-            this.displayName = displayName;
-        }
-
-        public String getDisplayName() {
-            return displayName;
-        }
+    @Override
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
-
 }

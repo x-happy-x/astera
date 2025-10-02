@@ -12,7 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.astera.backend.config.TestContainersConfig;
-import ru.astera.backend.dto.selection.FuelType;
+import ru.astera.backend.entity.FuelType;
 import ru.astera.backend.dto.selection.SelectionQueryDto;
 
 import java.math.BigDecimal;
@@ -48,7 +48,7 @@ class ConfigurationSelectionControllerIT {
         q.setPowerKw(new BigDecimal("500"));
         q.setTIn(new BigDecimal("95"));
         q.setTOut(new BigDecimal("70"));
-        q.setFuelType(FuelType.GAS);
+        q.setFuelType(FuelType.gas);
         q.setTopN(5);
         q.setIncludeAutomation(true);
 
@@ -76,7 +76,7 @@ class ConfigurationSelectionControllerIT {
         q.setPowerKw(new BigDecimal("500"));
         q.setTIn(new BigDecimal("95"));
         q.setTOut(new BigDecimal("70"));
-        q.setFuelType(FuelType.GAS);
+        q.setFuelType(FuelType.gas);
         q.setTopN(5);
         q.setIncludeAutomation(false);
 
@@ -100,7 +100,7 @@ class ConfigurationSelectionControllerIT {
         q.setPowerKw(new BigDecimal("500"));
         q.setTIn(new BigDecimal("70"));
         q.setTOut(new BigDecimal("95"));
-        q.setFuelType(FuelType.GAS);
+        q.setFuelType(FuelType.gas);
 
         mockMvc.perform(post("/api/selection/configurations")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -2,7 +2,8 @@ package ru.astera.backend.dto.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import ru.astera.backend.entity.Equipment;
+import ru.astera.backend.entity.EquipmentCategory;
+import ru.astera.backend.entity.FuelType;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class EquipmentDto {
     private UUID id;
 
     @JsonProperty("category")
-    private Equipment.EquipmentCategory category;
+    private EquipmentCategory category;
 
     @JsonProperty("brand")
     private String brand;
@@ -40,7 +41,7 @@ public class EquipmentDto {
     private Integer dnSize;
 
     @JsonProperty("fuelType")
-    private String fuelType;
+    private FuelType fuelType;
 
     @JsonProperty("connectionKey")
     private String connectionKey;

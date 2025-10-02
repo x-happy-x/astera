@@ -1,4 +1,4 @@
-package ru.astera.backend.service;
+package ru.astera.backend.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,10 @@ import ru.astera.backend.dto.registration.*;
 import ru.astera.backend.entity.CustomerProfile;
 import ru.astera.backend.entity.User;
 import ru.astera.backend.exception.InvalidCredentialsException;
+import ru.astera.backend.service.AuthService;
+import ru.astera.backend.service.CustomerService;
+import ru.astera.backend.service.JwtService;
+import ru.astera.backend.service.UserService;
 
 @Service
 @RequiredArgsConstructor

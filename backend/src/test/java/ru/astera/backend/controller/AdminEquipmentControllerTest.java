@@ -16,7 +16,7 @@ import ru.astera.backend.dto.admin.EquipmentCreateDto;
 import ru.astera.backend.dto.admin.EquipmentDto;
 import ru.astera.backend.dto.admin.EquipmentPageDto;
 import ru.astera.backend.dto.admin.EquipmentUpdateDto;
-import ru.astera.backend.entity.Equipment;
+import ru.astera.backend.entity.EquipmentCategory;
 import ru.astera.backend.exception.EquipmentNotFoundException;
 import ru.astera.backend.security.JwtAuthenticationFilter;
 import ru.astera.backend.service.EquipmentService;
@@ -172,7 +172,7 @@ class AdminEquipmentControllerTest {
     private EquipmentDto createTestEquipmentDto(UUID id, String brand, String model) {
         EquipmentDto dto = new EquipmentDto();
         dto.setId(id);
-        dto.setCategory(Equipment.EquipmentCategory.boiler);
+        dto.setCategory(EquipmentCategory.boiler);
         dto.setBrand(brand);
         dto.setModel(model);
         dto.setActive(true);
@@ -187,7 +187,7 @@ class AdminEquipmentControllerTest {
 
     private EquipmentCreateDto createTestEquipmentCreateDto() {
         EquipmentCreateDto dto = new EquipmentCreateDto();
-        dto.setCategory(Equipment.EquipmentCategory.boiler);
+        dto.setCategory(EquipmentCategory.boiler);
         dto.setBrand("Bosch");
         dto.setModel("Model1");
         dto.setActive(true);
@@ -202,7 +202,7 @@ class AdminEquipmentControllerTest {
 
     private EquipmentUpdateDto createTestEquipmentUpdateDto() {
         EquipmentUpdateDto dto = new EquipmentUpdateDto();
-        dto.setCategory(Equipment.EquipmentCategory.boiler);
+        dto.setCategory(EquipmentCategory.boiler);
         dto.setBrand("Bosch");
         dto.setModel("UpdatedModel");
         dto.setActive(true);
