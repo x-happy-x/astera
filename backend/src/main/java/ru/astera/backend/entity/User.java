@@ -47,7 +47,7 @@ public class User {
     private OffsetDateTime createdAt;
 
     public enum Role {
-        admin, manager
+        admin, manager, customer
     }
 
     @Override

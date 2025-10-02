@@ -1,4 +1,4 @@
-package ru.astera.backend.dto;
+package ru.astera.backend.dto.registration;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,4 +18,5 @@ public class ManagerRegistrationDto {
     @NotBlank(message = "Пароль обязателен для заполнения")
     @Size(min = 6, message = "Пароль должен содержать минимум 6 символов")
     private String password;
+
 }

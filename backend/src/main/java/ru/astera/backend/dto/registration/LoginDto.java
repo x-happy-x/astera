@@ -1,4 +1,4 @@
-package ru.astera.backend.dto;
+package ru.astera.backend.dto.registration;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,4 +13,5 @@ public class LoginDto {
 
     @NotBlank(message = "Пароль обязателен для заполнения")
     private String password;
+
 }
