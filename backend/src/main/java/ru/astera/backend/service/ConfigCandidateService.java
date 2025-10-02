@@ -1,13 +1,11 @@
 package ru.astera.backend.service;
 
-import org.springframework.stereotype.Service;
-import ru.astera.backend.dto.ConfigurationCandidateDto;
-import ru.astera.backend.dto.ConfigurationComponentDto;
+import ru.astera.backend.dto.selection.ConfigurationCandidateDto;
+import ru.astera.backend.dto.selection.ConfigurationComponentDto;
 
 import java.util.List;
 import java.util.UUID;
 
-@Service
 public interface ConfigCandidateService {
     List<ConfigurationCandidateDto> findByRequest(UUID requestId, boolean withComponents);
 

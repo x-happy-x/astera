@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/manager/register").hasRole("admin")
                         .requestMatchers("/api/selection/**").hasRole("customer")
+                        .requestMatchers("/api/heating-requests/**").hasRole("customer")
+                        .requestMatchers("/api/candidates/**").hasRole("customer")
                         .requestMatchers("/api/admin/**").hasAnyRole("admin", "manager")
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()

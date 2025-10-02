@@ -1,14 +1,12 @@
-package ru.astera.backend.dto;
+package ru.astera.backend.dto.selection;
 
 import lombok.Builder;
 import ru.astera.backend.entity.FuelType;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Builder
-public record HeatingRequestCreateDto(
-        UUID customerId,
+public record HeatingRequestUpdateDto(
         BigDecimal powerKw,
         BigDecimal tIn,
         BigDecimal tOut,

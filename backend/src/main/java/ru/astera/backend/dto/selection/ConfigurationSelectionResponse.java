@@ -5,6 +5,12 @@ import java.util.List;
 
 public class ConfigurationSelectionResponse {
     private List<ConfigurationCandidateDto> candidates = new ArrayList<>();
-    public List<ConfigurationCandidateDto> getCandidates() { return candidates; }
-    public void setCandidates(List<ConfigurationCandidateDto> candidates) { this.candidates = candidates; }
+
+    public List<ConfigurationCandidateDto> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(List<ConfigurationCandidateDto> candidates) {
+        this.candidates = candidates;
+    }
 }

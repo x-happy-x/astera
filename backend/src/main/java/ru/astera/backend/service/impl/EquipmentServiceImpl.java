@@ -81,7 +81,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     public void deleteEquipment(UUID id) {
         Equipment equipment = equipmentRepository.findById(id)
                 .orElseThrow(() -> new EquipmentNotFoundException("Equipment not found with id: " + id));
-        
+
         equipmentRepository.delete(equipment);
         log.info("Deleted equipment: {} {} with id: {}", equipment.getBrand(), equipment.getModel(), equipment.getId());
     }

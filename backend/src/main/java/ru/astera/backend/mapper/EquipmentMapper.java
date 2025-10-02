@@ -1,36 +1,45 @@
 package ru.astera.backend.mapper;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
+import org.mapstruct.ReportingPolicy;
 import ru.astera.backend.dto.selection.ConfigurationComponentDto;
 import ru.astera.backend.entity.Equipment;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
-@Component
-public class EquipmentMapper {
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface EquipmentMapper {
 
-    public ConfigurationComponentDto toComponentDto(Equipment e) {
-        if (e == null) {
-            return null;
-        }
-        ConfigurationComponentDto dto = new ConfigurationComponentDto();
-        dto.setEquipmentId(e.getId());
-        dto.setCategory(stringLower(e.getCategory()));
-        dto.setBrand(e.getBrand());
-        dto.setModel(e.getModel());
-        dto.setQty(BigDecimal.ONE);
-        BigDecimal unit = nz(e.getPrice());
-        dto.setUnitPrice(unit);
-        dto.setSubtotal(unit);
-        return dto;
-    }
+    @Mappings({
+            @Mapping(target = "equipmentId", source = "id"),
+            @Mapping(target = "category", source = "category"),
+            @Mapping(target = "brand", source = "brand"),
+            @Mapping(target = "model", source = "model"),
+            @Mapping(target = "dnSize", source = "dnSize"),
+            @Mapping(target = "connectionKey", source = "connectionKey"),
+            @Mapping(target = "deliveryDays", source = "deliveryDays"),
+            @Mapping(target = "qty", expression = "java(java.math.BigDecimal.ONE)"),
+            @Mapping(target = "unitPrice", source = "price"),
+            @Mapping(target = "subtotal", source = "price")
+    })
+    ConfigurationComponentDto toComponentDto(Equipment equipment);
 
-    private String stringLower(Object category) {
-        return category == null ? null : String.valueOf(category).toLowerCase();
-    }
-
-    private BigDecimal nz(BigDecimal v) {
-        return v == null ? BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP) : v;
+    default ConfigurationComponentDto toComponentDto(Equipment equipment, BigDecimal qty) {
+        ConfigurationComponentDto base = toComponentDto(equipment);
+        return new ConfigurationComponentDto(
+                base.equipmentId(),
+                base.category(),
+                base.brand(),
+                base.model(),
+                base.dnSize(),
+                base.connectionKey(),
+                base.deliveryDays(),
+                qty,
+                base.unitPrice(),
+                base.unitPrice().multiply(qty)
+        );
     }
 }

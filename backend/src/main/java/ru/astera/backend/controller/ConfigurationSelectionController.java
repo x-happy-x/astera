@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/selection")
 @Validated
-
 @RequiredArgsConstructor
 public class ConfigurationSelectionController {
 

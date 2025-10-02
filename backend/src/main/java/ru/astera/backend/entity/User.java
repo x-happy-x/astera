@@ -46,10 +46,6 @@ public class User {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    public enum Role {
-        admin, manager, customer
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) {
@@ -70,5 +66,9 @@ public class User {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    public enum Role {
+        admin, manager, customer
     }
 }

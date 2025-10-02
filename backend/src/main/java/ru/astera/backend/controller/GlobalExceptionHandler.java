@@ -1,25 +1,44 @@
-package ru.astera.backend.exception;
+package ru.astera.backend.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.astera.backend.exception.*;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static ResponseEntity<ErrorResponse> handleException(Exception ex, HttpStatus status) {
+        ErrorResponse error = new ErrorResponse(
+                status.value(),
+                ex.getMessage(),
+                OffsetDateTime.now()
+        );
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ErrorResponseException.class)
+    public ResponseEntity<ErrorResponse> springError(ErrorResponseException ex) {
+        return handleException(ex, HttpStatus.valueOf(ex.getStatusCode().value()));
+    }
+
     @ExceptionHandler({
             CustomerNotFoundException.class,
-            EquipmentNotFoundException.class
+            EquipmentNotFoundException.class,
+            NoSuchElementException.class
     })
     public ResponseEntity<ErrorResponse> handleUserAlreadyExists(Exception ex) {
         log.warn("Not found error", ex);
@@ -65,7 +84,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            IllegalArgumentException.class
+            IllegalArgumentException.class,
+            ConstraintViolationException.class
     })
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         log.warn("Bad request", ex);
@@ -76,14 +96,5 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         log.error("Internal server error", ex);
         return handleException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private static ResponseEntity<ErrorResponse> handleException(Exception ex, HttpStatus status) {
-        ErrorResponse error = new ErrorResponse(
-                status.value(),
-                ex.getMessage(),
-                OffsetDateTime.now()
-        );
-        return ResponseEntity.status(status).body(error);
     }
 }

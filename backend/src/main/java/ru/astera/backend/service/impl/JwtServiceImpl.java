@@ -15,13 +15,13 @@ import java.util.Map;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-    
+
     @Value("${app.jwt.secret:mySecretKey}")
     private String secret;
-    
+
     @Value("${app.jwt.expiration:86400000}")
     private Long expiration;
-    
+
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
@@ -32,7 +32,7 @@ public class JwtServiceImpl implements JwtService {
         claims.put("role", role);
         return createToken(claims, email);
     }
-    
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -63,7 +63,7 @@ public class JwtServiceImpl implements JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    
+
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())

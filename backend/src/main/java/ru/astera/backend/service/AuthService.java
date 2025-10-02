@@ -1,9 +1,7 @@
 package ru.astera.backend.service;
 
-import org.springframework.stereotype.Service;
 import ru.astera.backend.dto.registration.*;
 
-@Service
 public interface AuthService {
     AuthResponseDto login(LoginDto dto);
 

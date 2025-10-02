@@ -9,9 +9,11 @@ import java.util.UUID;
 @Builder
 public record HeatingRequestDto(
         UUID id,
+        UUID customerId,
         BigDecimal powerKw,
         BigDecimal tIn,
         BigDecimal tOut,
-        FuelType fuelType
+        FuelType fuelType,
+        String notes
 ) {
 }

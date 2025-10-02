@@ -3,7 +3,7 @@ package ru.astera.backend.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.astera.backend.dto.ConfigurationComponentDto;
+import ru.astera.backend.dto.selection.ConfigurationComponentDto;
 import ru.astera.backend.entity.ConfigComponent;
 import ru.astera.backend.mapper.ConfigComponentMapper;
 import ru.astera.backend.repository.ConfigCandidateRepository;

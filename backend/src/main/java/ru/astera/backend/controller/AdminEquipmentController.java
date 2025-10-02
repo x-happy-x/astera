@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.astera.backend.dto.admin.*;
+import ru.astera.backend.dto.admin.EquipmentCreateDto;
+import ru.astera.backend.dto.admin.EquipmentDto;
+import ru.astera.backend.dto.admin.EquipmentPageDto;
+import ru.astera.backend.dto.admin.EquipmentUpdateDto;
 import ru.astera.backend.service.EquipmentService;
 
 import java.util.UUID;

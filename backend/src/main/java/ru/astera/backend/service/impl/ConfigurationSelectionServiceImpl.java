@@ -94,21 +94,22 @@ public class ConfigurationSelectionServiceImpl implements ConfigurationSelection
                     .map(equipmentMapper::toComponentDto)
                     .collect(Collectors.toList());
 
-            ConfigurationCandidateDto candidate = new ConfigurationCandidateDto();
-            candidate.setRequestId(req.id());
-            candidate.setTotalPrice(total);
-            candidate.setCurrency("RUB");
-            candidate.setMaxDeliveryDays(maxDeliveryDays);
-            candidate.setConnectionKey(pair.getConnectionKey());
-            candidate.setDnSize(dn);
-            candidate.setComponents(components);
+            ConfigurationCandidateDto candidate = ConfigurationCandidateDto.builder()
+                    .requestId(req.id())
+                    .totalPrice(total)
+                    .currency("RUB")
+                    .maxDeliveryDays(maxDeliveryDays)
+                    .connectionKey(pair.getConnectionKey())
+                    .dnSize(pair.getDnSize())
+                    .components(components)
+                    .build();
 
             candidates.add(candidate);
         }
 
         candidates.sort(Comparator
-                .comparing(ConfigurationCandidateDto::getTotalPrice)
-                .thenComparing(ConfigurationCandidateDto::getMaxDeliveryDays));
+                .comparing(ConfigurationCandidateDto::totalPrice)
+                .thenComparing(ConfigurationCandidateDto::maxDeliveryDays));
 
         if (candidates.size() > topN) {
             return candidates.subList(0, topN);
