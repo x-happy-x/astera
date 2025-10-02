@@ -22,8 +22,7 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @UuidGenerator
-    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "email", nullable = false, unique = true)

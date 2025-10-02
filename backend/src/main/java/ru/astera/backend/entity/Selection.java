@@ -2,6 +2,7 @@ package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Builder
 public class Selection {
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -26,6 +27,7 @@ public class Selection {
     @JoinColumn(name = "candidate_id", nullable = false)
     private ConfigCandidate candidate;
 
+    @CreationTimestamp
     @Column(name = "selected_at", nullable = false)
     private OffsetDateTime selectedAt;
 

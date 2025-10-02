@@ -3,6 +3,8 @@ package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -19,7 +21,7 @@ import java.util.UUID;
 @Builder
 public class ConfigCandidate {
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -32,6 +34,7 @@ public class ConfigCandidate {
     @Column(nullable = false)
     private String currency = "RUB";
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 

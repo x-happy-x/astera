@@ -52,7 +52,7 @@ class HeatingRequestMapperTest {
         assertThat(entity.getTOut()).isEqualByComparingTo(new BigDecimal("70.0"));
         assertThat(entity.getFuelType()).isEqualTo(FuelType.gas);
         assertThat(entity.getNotes()).isEqualTo("Test notes");
-        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.CREATED);
+        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.created);
         assertThat(entity.getCreatedAt()).isNull(); // должен игнорироваться
     }
 
@@ -73,7 +73,7 @@ class HeatingRequestMapperTest {
                 .tOut(new BigDecimal("80.0"))
                 .fuelType(FuelType.diesel)
                 .notes("Entity notes")
-                .status(HeatingRequestStatus.CREATED)
+                .status(HeatingRequestStatus.created)
                 .createdAt(OffsetDateTime.now())
                 .build();
 
@@ -106,7 +106,7 @@ class HeatingRequestMapperTest {
                 .tOut(new BigDecimal("60.0"))
                 .fuelType(FuelType.gas)
                 .notes("Original notes")
-                .status(HeatingRequestStatus.CREATED)
+                .status(HeatingRequestStatus.created)
                 .createdAt(OffsetDateTime.now())
                 .build();
 
@@ -129,7 +129,7 @@ class HeatingRequestMapperTest {
         // Другие поля должны остаться неизменными
         assertThat(entity.getId()).isNotNull();
         assertThat(entity.getCustomerProfile()).isNotNull();
-        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.CREATED);
+        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.created);
         assertThat(entity.getCreatedAt()).isNotNull();
     }
 
@@ -148,7 +148,7 @@ class HeatingRequestMapperTest {
                 .tOut(new BigDecimal("60.0"))
                 .fuelType(FuelType.gas)
                 .notes("Original notes")
-                .status(HeatingRequestStatus.CREATED)
+                .status(HeatingRequestStatus.created)
                 .createdAt(OffsetDateTime.now())
                 .build();
 
@@ -191,7 +191,7 @@ class HeatingRequestMapperTest {
         assertThat(entity.getCustomerProfile()).isNull();
         assertThat(entity.getPowerKw()).isEqualByComparingTo(new BigDecimal("50.0"));
         assertThat(entity.getFuelType()).isEqualTo(FuelType.gas);
-        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.CREATED);
+        assertThat(entity.getStatus()).isEqualTo(HeatingRequestStatus.created);
     }
 
     @Test
@@ -205,7 +205,7 @@ class HeatingRequestMapperTest {
                 .tOut(new BigDecimal("80.0"))
                 .fuelType(FuelType.diesel)
                 .notes("Entity notes")
-                .status(HeatingRequestStatus.CREATED)
+                .status(HeatingRequestStatus.created)
                 .createdAt(OffsetDateTime.now())
                 .build();
 

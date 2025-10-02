@@ -25,13 +25,15 @@ public class HeatingRequestServiceImpl implements HeatingRequestService {
 
     private final HeatingRequestRepository repo;
     private final HeatingRequestMapper mapper;
+    private final CustomerServiceImpl customerService;
 
     @Transactional
     @Override
-    public HeatingRequestDto create(HeatingRequestCreateDto dto) {
+    public HeatingRequestDto create(UUID customerId, HeatingRequestCreateDto dto) {
         validateParams(dto.powerKw(), dto.tIn(), dto.tOut());
         HeatingRequest entity = mapper.toEntity(dto);
-        entity.setStatus(HeatingRequestStatus.CREATED);
+        entity.setCustomerProfile(customerService.findCustomerByUserId(customerId));
+        entity.setStatus(HeatingRequestStatus.created);
         return mapper.toDto(repo.save(entity));
     }
 

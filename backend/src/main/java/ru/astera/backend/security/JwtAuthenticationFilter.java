@@ -14,6 +14,7 @@ import ru.astera.backend.service.JwtService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -34,25 +35,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         jwt = authHeader.substring(7);
         try {
             userEmail = jwtService.extractEmail(jwt);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null
+                    && jwtService.validateToken(jwt, userEmail)) {
 
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (jwtService.validateToken(jwt, userEmail)) {
-                    String role = jwtService.extractRole(jwt);
-                    List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                UUID userId = jwtService.extractUserId(jwt);
+                String role = jwtService.extractRole(jwt);
 
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userEmail, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+                var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+                var principal = new UserDetails(userId, userEmail);
+
+                var auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
-        } catch (Exception e) {
-            // Token is invalid, continue without authentication
+        } catch (Exception ignored) {
         }
-
         filterChain.doFilter(request, response);
     }
 }

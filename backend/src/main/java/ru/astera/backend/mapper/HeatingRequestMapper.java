@@ -16,8 +16,8 @@ public interface HeatingRequestMapper {
     @Mappings({
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "customerProfile", expression = "java(refCustomerProfile(dto.customerId()))"),
-            @Mapping(target = "status", constant = "CREATED"),
-            @Mapping(target = "createdAt", ignore = true) // выставит БД/сервис
+            @Mapping(target = "status", constant = "created"),
+            @Mapping(target = "createdAt", ignore = true)
     })
     HeatingRequest toEntity(HeatingRequestCreateDto dto);
 

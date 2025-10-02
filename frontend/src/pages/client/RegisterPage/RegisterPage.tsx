@@ -1,16 +1,20 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { authApi } from '../../../api'
 import Card from '../../../components/ui/Card'
 import './styles.scss'
 
 const RegisterPage: React.FC = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         fullName: '',
-        email: '',
         phone: '',
-        company: ''
+        email: '',
+        organization: '',
+        password: ''
     })
     const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -18,18 +22,21 @@ const RegisterPage: React.FC = () => {
             ...prev,
             [name]: value
         }))
+        setError(null)
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
+        setError(null)
 
         try {
-            // TODO: реализовать отправку данных
-            console.log('Регистрация:', formData)
-            alert('Спасибо за регистрацию! Мы свяжемся с вами.')
+            const response = await authApi.registerCustomer(formData)
+            localStorage.setItem('authToken', response.token)
+            localStorage.setItem('userType', 'customer')
+            navigate('/client/requests')
         } catch (error) {
-            console.error('Ошибка регистрации:', error)
+            setError(error instanceof Error ? error.message : 'Ошибка регистрации')
         } finally {
             setIsLoading(false)
         }
@@ -44,9 +51,15 @@ const RegisterPage: React.FC = () => {
                         <p>Заполните форму для получения доступа</p>
                     </div>
 
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="register-form">
                         <div className="form-group">
-                            <label htmlFor="fullName">Полное имя *</label>
+                            <label htmlFor="fullName">ФИО *</label>
                             <input
                                 type="text"
                                 id="fullName"
@@ -56,6 +69,20 @@ const RegisterPage: React.FC = () => {
                                 required
                                 disabled={isLoading}
                                 placeholder="Иванов Иван Иванович"
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="organization">Название организации *</label>
+                            <input
+                                type="text"
+                                id="organization"
+                                name="organization"
+                                value={formData.organization}
+                                onChange={handleChange}
+                                required
+                                disabled={isLoading}
+                                placeholder="ООО Рога и Копыта"
                             />
                         </div>
 
@@ -74,6 +101,21 @@ const RegisterPage: React.FC = () => {
                         </div>
 
                         <div className="form-group">
+                            <label htmlFor="password">Пароль *</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                disabled={isLoading}
+                                minLength={6}
+                                placeholder="Минимум 6 символов"
+                            />
+                        </div>
+
+                        <div className="form-group">
                             <label htmlFor="phone">Телефон *</label>
                             <input
                                 type="tel"
@@ -87,19 +129,6 @@ const RegisterPage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="company">Компания</label>
-                            <input
-                                type="text"
-                                id="company"
-                                name="company"
-                                value={formData.company}
-                                onChange={handleChange}
-                                disabled={isLoading}
-                                placeholder="Название компании"
-                            />
-                        </div>
-
                         <button
                             type="submit"
                             className="register-btn"
@@ -110,6 +139,8 @@ const RegisterPage: React.FC = () => {
 
                         <div className="back-link">
                             <Link to="/">← Назад к главной</Link>
+                            <span> | </span>
+                            <Link to="/client/login">Уже есть аккаунт? Войти</Link>
                         </div>
                     </form>
                 </Card>

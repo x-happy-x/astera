@@ -1,17 +1,23 @@
 package ru.astera.backend.service;
 
+import io.jsonwebtoken.Claims;
+
 import java.util.Date;
+import java.util.UUID;
+import java.util.function.Function;
 
 public interface JwtService {
-    String generateToken(String email, String role);
+    String generateToken(UUID userId, String email, String role);
 
     String extractEmail(String token);
 
     String extractRole(String token);
 
+    UUID extractUserId(String token);          // <--
+
     Date extractExpiration(String token);
 
-    <T> T extractClaim(String token, java.util.function.Function<io.jsonwebtoken.Claims, T> claimsResolver);
+    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
     Boolean isTokenExpired(String token);
 

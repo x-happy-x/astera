@@ -57,9 +57,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="admin-layout">
             <Sidebar
                 isOpen={sidebarOpen}
-                isMobile={isMobile}
                 user={state.user}
                 onLogout={logout}
+                onCloseMobile={isMobile ? () => setSidebarOpen(false) : undefined}
             />
 
             {/* Оверлей ТОЛЬКО на мобилке и только когда открыт сайдбар */}

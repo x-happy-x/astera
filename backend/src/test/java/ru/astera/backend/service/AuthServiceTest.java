@@ -65,7 +65,7 @@ class AuthServiceTest {
             var mgr = user(manager, true, "mgr@ex.com", "Менеджер", "$hash$");
             when(userService.findByEmail("mgr@ex.com")).thenReturn(mgr);
             when(userService.checkPassword(mgr, "pass")).thenReturn(true);
-            when(jwtService.generateToken("mgr@ex.com", "manager")).thenReturn("jwt-token");
+            when(jwtService.generateToken(any(), "mgr@ex.com", "manager")).thenReturn("jwt-token");
 
             AuthResponseDto resp = authService.login(dto);
 
@@ -90,7 +90,7 @@ class AuthServiceTest {
 
             assertThatThrownBy(() -> authService.login(dto))
                     .isInstanceOf(InvalidCredentialsException.class);
-            verify(jwtService, never()).generateToken(any(), any());
+            verify(jwtService, never()).generateToken(any(), any(), any());
         }
 
         @Test
@@ -164,7 +164,7 @@ class AuthServiceTest {
 
             var user = user(manager, true, "mgr@ex.com", "М1", "$hash$");
             when(userService.createManager(dto)).thenReturn(user);
-            when(jwtService.generateToken("mgr@ex.com", "manager")).thenReturn("jwt-token");
+            when(jwtService.generateToken(any(), "mgr@ex.com", "manager")).thenReturn("jwt-token");
 
             AuthResponseDto resp = authService.register(dto);
 
@@ -195,7 +195,7 @@ class AuthServiceTest {
             profile.setOrganization("ООО Ромашка");
             when(customerService.findCustomerByUserId(USER_ID)).thenReturn(profile);
 
-            when(jwtService.generateToken("cust@ex.com", "customer")).thenReturn("cust-token");
+            when(jwtService.generateToken(any(), "cust@ex.com", "customer")).thenReturn("cust-token");
             when(objectMapper.convertValue(any(AuthResponseDto.class), eq(CustomerResponseDto.class)))
                     .thenAnswer(inv -> {
                         AuthResponseDto base = inv.getArgument(0);
@@ -271,7 +271,7 @@ class AuthServiceTest {
             profile.setOrganization("ООО Василёк");
 
             when(customerService.registerCustomer(req)).thenReturn(profile);
-            when(jwtService.generateToken("cust@ex.com", "customer")).thenReturn("tok");
+            when(jwtService.generateToken(any(), "cust@ex.com", "customer")).thenReturn("tok");
 
             CustomerResponseDto resp = authService.registerCustomer(req);
 
@@ -283,7 +283,7 @@ class AuthServiceTest {
             assertThat(resp.getOrganization()).isEqualTo("ООО Василёк");
 
             verify(customerService).registerCustomer(req);
-            verify(jwtService).generateToken("cust@ex.com", "customer");
+            verify(jwtService).generateToken(any(), "cust@ex.com", "customer");
         }
     }
 }

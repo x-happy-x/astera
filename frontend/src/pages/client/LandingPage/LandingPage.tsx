@@ -26,6 +26,9 @@ const LandingPage: React.FC = () => {
                             <Link to="/register" className="btn btn-primary">
                                 Зарегистрироваться
                             </Link>
+                            <Link to="/client/login" className="btn btn-secondary">
+                                Вход для клиентов
+                            </Link>
                             <Link to="/admin/login" className="btn btn-secondary">
                                 Вход для администраторов
                             </Link>

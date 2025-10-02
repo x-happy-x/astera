@@ -2,6 +2,7 @@ package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Builder
 public class HeatingRequest {
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -41,8 +42,9 @@ public class HeatingRequest {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private HeatingRequestStatus status = HeatingRequestStatus.CREATED;
+    private HeatingRequestStatus status = HeatingRequestStatus.created;
 
+    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 }

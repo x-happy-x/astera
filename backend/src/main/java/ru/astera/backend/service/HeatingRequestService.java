@@ -12,7 +12,7 @@ import ru.astera.backend.entity.HeatingRequestStatus;
 import java.util.UUID;
 
 public interface HeatingRequestService {
-    HeatingRequestDto create(HeatingRequestCreateDto dto);
+    HeatingRequestDto create(UUID customerId, HeatingRequestCreateDto dto);
 
     HeatingRequestDto get(UUID id);
 

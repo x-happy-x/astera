@@ -6,7 +6,7 @@ import ru.astera.backend.entity.FuelType;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 public record HeatingRequestCreateDto(
         UUID customerId,
         BigDecimal powerKw,
