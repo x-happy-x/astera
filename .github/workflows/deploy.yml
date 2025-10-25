@@ -35,7 +35,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # ---------- Backend ----------
       - name: Build backend jar
         run: |
           cd backend
@@ -51,7 +50,6 @@ jobs:
             ghcr.io/${{ github.repository }}/backend:latest
             ghcr.io/${{ github.repository }}/backend:${{ env.IMAGE_TAG }}
 
-      # ---------- Frontend ----------
       - name: Build & push frontend image
         uses: docker/build-push-action@v6
         with:
@@ -65,20 +63,53 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
+    environment:
+      name: PROD
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload compose
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ vars.SSH_PORT }}
+          source: "docker-compose.yml"
+          target: "${{ vars.DEPLOY_DIR }}"
+          strip_components: 0
+
+      - name: Sanity check env
+        run: |
+          test -n "${{ vars.SSH_HOST }}" || (echo "SSH_HOST is empty" && exit 1)
+          test -n "${{ vars.SSH_USER }}" || (echo "SSH_USER is empty" && exit 1)
+          test -n "${{ vars.SSH_PORT }}" || (echo "SSH_PORT is empty" && exit 1)
+          test -n "${{ vars.DEPLOY_DIR }}" || (echo "DEPLOY_DIR is empty" && exit 1)
+          test -n "${{ vars.GHCR_USERNAME }}" || (echo "GHCR_USERNAME is empty" && exit 1)
+          test -n "${{ secrets.GHCR_TOKEN }}" || (echo "GHCR_TOKEN is empty" && exit 1)
+          test -n "${{ secrets.SSH_KEY }}" || (echo "SSH_KEY is empty" && exit 1)
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          port: ${{ vars.SSH_PORT }}
           script_stop: true
           script: |
-            set -e
-            cd ${{ secrets.DEPLOY_DIR }}
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+            set -euo pipefail
+            mkdir -p "${{ vars.DEPLOY_DIR }}"
+            cd "${{ vars.DEPLOY_DIR }}"
+
+            echo "${{ secrets.GHCR_TOKEN }}" \
+              | docker login ghcr.io -u "${{ vars.GHCR_USERNAME }}" --password-stdin
+
             echo "IMAGE_TAG=${{ env.IMAGE_TAG }}" > .env
+
             docker compose pull
             docker compose up -d --remove-orphans
+
+            until curl -fsS http://localhost:8080/actuator/health; do sleep 2; done
+
             docker system prune -f
