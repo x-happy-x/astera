@@ -1,4 +1,8 @@
 services:
+
+  postgres:
+    restart: unless-stopped
+
   backend:
     image: astera-backend:local
     environment:
