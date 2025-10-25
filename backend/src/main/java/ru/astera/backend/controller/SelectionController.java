@@ -1,62 +1,61 @@
 package ru.astera.backend.controller;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.astera.backend.dto.selection.ConfigurationCandidateDto;
-import ru.astera.backend.dto.selection.HeatingRequestDto;
-import ru.astera.backend.service.ConfigCandidateService;
-import ru.astera.backend.service.ConfigurationSelectionService;
-import ru.astera.backend.service.HeatingRequestService;
+import ru.astera.backend.entity.HeatingRequestStatus;
+import ru.astera.backend.service.SelectionService;
+import ru.astera.backend.service.impl.SelectionServiceImpl;
 
-import java.util.*;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/heating-requests")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Validated
 public class SelectionController {
 
-    private final HeatingRequestService heatingRequestService;
-    private final ConfigurationSelectionService selectionService;
-    private final ConfigCandidateService candidateService;
+    private final SelectionService selectionService;
 
-    /**
-     * Превью (без сохранения): посчитать top-N конфигураций для запроса.
-     */
-    @PostMapping("/{id}/preview-candidates")
-    public ResponseEntity<List<ConfigurationCandidateDto>> preview(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "5") @Min(1) int topN,
-            @RequestParam(defaultValue = "true") boolean includeAutomation
-    ) {
-        HeatingRequestDto req = heatingRequestService.get(id);
-        List<ConfigurationCandidateDto> preview =
-                selectionService.selectTopConfigurations(req, topN, includeAutomation);
-        return ResponseEntity.ok(preview);
+    // ---- Получить выбор по запросу
+    @GetMapping("/heating-requests/{requestId}/selection")
+    public ResponseEntity<SelectionServiceImpl.SelectionDto> getByRequest(@PathVariable UUID requestId) {
+        return ResponseEntity.ok(selectionService.getByRequest(requestId));
     }
 
-    /**
-     * Генерация и сохранение: заменить кандидатов у запроса на top-N из движка,
-     * вернуть сохранённые (уже с ID из базы).
-     */
-    @PostMapping("/{id}/generate-candidates")
-    public ResponseEntity<List<ConfigurationCandidateDto>> generateAndPersist(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "5") @Min(1) int topN,
-            @RequestParam(defaultValue = "true") boolean includeAutomation
+    // ---- Получить выбор по id
+    @GetMapping("/selections/{selectionId}")
+    public ResponseEntity<SelectionServiceImpl.SelectionDto> getById(@PathVariable UUID selectionId) {
+        return ResponseEntity.ok(selectionService.getById(selectionId));
+    }
+
+    // ---- Зафиксировать выбор (create/update idempotent)
+    @PostMapping("/heating-requests/{requestId}/selection")
+    public ResponseEntity<SelectionServiceImpl.SelectionDto> select(
+            @PathVariable UUID requestId,
+            @RequestBody @Valid SelectRequest body
     ) {
-        HeatingRequestDto req = heatingRequestService.get(id);
-        List<ConfigurationCandidateDto> generated =
-                selectionService.selectTopConfigurations(req, topN, includeAutomation);
+        SelectionServiceImpl.SelectionDto dto = selectionService.select(requestId, body.candidateId(), body.pdfPath());
+        return ResponseEntity.ok(dto);
+    }
 
-        // сохранить как "текущую выдачу" (Форма №3)
-        candidateService.replaceCandidates(id, generated);
+    // ---- Удалить выбор и вернуть статус запроса (опционально) к PROPOSED/CREATED
+    @DeleteMapping("/heating-requests/{requestId}/selection")
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID requestId,
+            @RequestParam(required = false) HeatingRequestStatus statusAfterDelete
+    ) {
+        selectionService.deleteByRequest(requestId, statusAfterDelete);
+        return ResponseEntity.noContent().build();
+    }
 
-        // вернуть уже сохранённые кандидаты (с компонентами и id)
-        return ResponseEntity.ok(candidateService.findByRequest(id, true));
+    // ---- payload для выбора
+    public record SelectRequest(
+            @NotNull UUID candidateId,
+            String pdfPath
+    ) {
     }
 }

@@ -1,0 +1,119 @@
+.rc__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-md);
+  margin-bottom: var(--gap-md);
+  padding-bottom: var(--gap-sm);
+  border-bottom: 2px solid var(--color-border);
+}
+
+.rc__title {
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.rc__mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.02em;
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.rc__meta {
+  font-size: 12px;
+  color: var(--color-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.rc__grid {
+  display: grid;
+  gap: 8px;
+  margin-bottom: var(--gap-md);
+  min-height: 120px;
+}
+
+.rc__row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: var(--gap-md);
+  align-items: center;
+
+  dt {
+    color: var(--color-muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-text);
+
+    strong {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--color-primary);
+    }
+  }
+}
+
+.rc__note {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text);
+  padding: 8px 10px;
+  background: color-mix(in srgb, var(--color-muted) 4%, transparent);
+  border-radius: var(--radius-sm);
+  border-left: 2px solid var(--color-primary);
+  grid-column: 1 / -1;
+  margin-top: 2px;
+}
+
+/* Кнопки */
+.rc__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.rc__actions .rc__btn-edit.btn.btn--ghost {
+  background: color-mix(in srgb, var(--color-neutral) 6%, transparent);
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-neutral) 12%, transparent);
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 640px) {
+  .rc__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rc__row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+
+    dt {
+      font-size: 10px;
+    }
+    dd {
+      font-size: 13px;
+    }
+  }
+}

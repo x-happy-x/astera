@@ -1,43 +1,49 @@
-import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { useAuth } from '../../../hooks/useAuth'
-import Card from '../../../components/ui/Card'
-import './styles.scss'
+import React, { useState } from 'react';
+import { Navigate, Link } from 'react-router-dom';
+import { useAuth } from '../../../hooks/useAuth';
+import './styles.scss';
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const { state, login } = useAuth()
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const { state, login } = useAuth();
 
     if (state.user) {
-        return <Navigate to="/admin/dashboard" replace />
+        return <Navigate to="/admin/requests" replace />;
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
 
         try {
-            await login(email, password)
+            await login(email, password);
         } catch (error) {
-            console.error('Login failed:', error)
+            console.error('Login failed:', error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="login-page">
-            <div className="login-container">
-                <Card>
-                    <div className="login-header">
-                        <h2>Вход в систему</h2>
-                        <p>Административная панель</p>
-                    </div>
+        <div className="admin-login-page">
+            <div className="admin-login-container">
+                <header className="admin-login-header">
+                    <div className="admin-login-badge">АСТЕРА</div>
+                    <h1 className="admin-login-title">Вход для менеджеров</h1>
+                    <p className="admin-login-subtitle">Административная панель</p>
+                </header>
 
-                    <form onSubmit={handleSubmit} className="login-form">
-                        <div className="form-group">
+                <div className="admin-login-card">
+                    {state.error && (
+                        <div className="admin-error-message">
+                            {state.error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="admin-login-form">
+                        <div className="admin-form-field">
                             <label htmlFor="email">Email</label>
                             <input
                                 type="email"
@@ -50,7 +56,7 @@ const LoginPage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="admin-form-field">
                             <label htmlFor="password">Пароль</label>
                             <input
                                 type="password"
@@ -59,27 +65,28 @@ const LoginPage: React.FC = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                                 disabled={isLoading}
+                                placeholder="Введите пароль"
                             />
                         </div>
 
-                        {state.error && (
-                            <div className="error-message">
-                                {state.error}
-                            </div>
-                        )}
-
                         <button
                             type="submit"
-                            className="login-btn"
+                            className="admin-submit-btn"
                             disabled={isLoading}
                         >
                             {isLoading ? 'Вход...' : 'Войти'}
                         </button>
                     </form>
-                </Card>
+
+                    <div className="admin-login-footer">
+                        <Link to="/" className="back-link">
+                            ← Вернуться на главную
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default LoginPage
+export default LoginPage;

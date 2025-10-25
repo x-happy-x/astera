@@ -1,29 +1,43 @@
-.admin-layout {
-  display: flex;
-  height: 100vh;
-  background-color: #f5f6fa;
-
-  .admin-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-
-    .admin-content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      background-color: #f5f6fa;
-    }
-  }
+.admin-shell {
+  display: grid;
+  grid-template-columns: 1fr; /* сайдбар позиционируется фиксированно самим компонентом */
+  min-height: 100vh;
+  background: color-mix(in srgb, var(--color-text) 2%, var(--color-bg));
 }
 
-@media (max-width: 768px) {
-  .admin-layout {
-    .admin-main {
-      .admin-content {
-        padding: 15px;
-      }
-    }
-  }
+.admin-main {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+}
+
+/* отступы внутри контента */
+.admin-page-head {
+  padding: var(--gap-lg) var(--container-padding-x) 0;
+}
+
+.admin-content {
+  padding: var(--gap-lg) var(--container-padding-x) var(--gap-lg);
+}
+
+/* маленькая иконкo-кнопка */
+.icon-btn {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--tr-fast), transform 60ms ease;
+}
+
+.icon-btn:hover {
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+
+.icon-btn:active {
+  transform: translateY(1px);
 }

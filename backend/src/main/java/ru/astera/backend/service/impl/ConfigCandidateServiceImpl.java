@@ -70,19 +70,24 @@ public class ConfigCandidateServiceImpl implements ConfigCandidateService {
         ensureRequestExists(requestId);
 
         candidateRepo.deleteByRequestId(requestId);
+        candidateRepo.flush(); // синхронизируемся после bulk delete (рекомендуется)
 
         for (ConfigurationCandidateDto dto : dtos) {
+            // маппим кандидата БЕЗ ручной установки id
             ConfigCandidate cand = candidateMapper.toEntity(dto);
-            cand.setId(UUID.randomUUID());
+
+            // гарантированно привязываем запрос (ты уже проверил exists)
             requestRepo.findById(requestId).ifPresent(cand::setRequest);
+
+            // INSERT (Hibernate сам сгенерит UUID благодаря @GeneratedValue)
             cand = candidateRepo.save(cand);
 
+            // если есть компоненты — собираем их с корректным embedded id и ссылкой на кандидата
             if (dto.components() != null && !dto.components().isEmpty()) {
                 List<ConfigComponent> comps = new ArrayList<>(dto.components().size());
                 for (ConfigurationComponentDto cDto : dto.components()) {
-                    ConfigComponent comp = componentMapper.toEntity(cDto);
-                    ConfigCandidate candidate = candidateRepo.findById(cand.getId()).orElse(null);
-                    comp.setCandidate(candidate);
+                    ConfigComponent comp = componentMapper.toEntity(cDto, cand.getId()); // <-- candidateId в embedded id
+                    comp.setCandidate(cand); // ссылка на владельца (mappedBy="candidate")
                     comps.add(comp);
                 }
                 componentRepo.saveAll(comps);

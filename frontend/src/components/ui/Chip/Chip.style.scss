@@ -1,0 +1,59 @@
+/* Использует глобальные переменные из :root */
+.chip {
+  --chip-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --chip-bg-hover: color-mix(in srgb, var(--color-text) 10%, transparent);
+  --chip-bg-selected: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  --chip-border: var(--color-border);
+  --chip-color: var(--color-text);
+
+  display: inline-grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--chip-border);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--chip-color);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--tr-fast), border-color var(--tr-fast), transform 60ms ease;
+  white-space: nowrap;
+
+  &:hover { background: var(--chip-bg-hover); }
+  &:active { transform: translateY(1px); }
+  &:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+  &.is-selected {
+    background: var(--chip-bg-selected);
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  }
+
+  /* размеры */
+  &.chip--sm { padding: 4px 10px; font-size: 12px; gap: 6px; }
+  &.chip--md { padding: 6px 12px; font-size: 14px; }
+  &.chip--lg { padding: 8px 14px; font-size: 16px; }
+
+  /* скругления */
+  &.chip--r-md   { border-radius: var(--radius-md); }
+  &.chip--r-lg   { border-radius: var(--radius-lg); }
+  &.chip--r-pill { border-radius: 999px; }
+
+  /* варианты */
+  &.chip--primary {
+    --chip-bg: color-mix(in srgb, var(--color-primary) 10%, transparent);
+    --chip-bg-hover: color-mix(in srgb, var(--color-primary) 16%, transparent);
+    --chip-bg-selected: color-mix(in srgb, var(--color-primary) 24%, transparent);
+    --chip-border: color-mix(in srgb, var(--color-primary) 38%, transparent);
+  }
+  &.chip--accent {
+    --chip-bg: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    --chip-bg-hover: color-mix(in srgb, var(--color-accent) 16%, transparent);
+    --chip-bg-selected: color-mix(in srgb, var(--color-accent) 22%, transparent);
+    --chip-border: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  }
+
+  .chip__leading, .chip__trailing { display: inline-flex; align-items: center; }
+  .chip__label { overflow: hidden; text-overflow: ellipsis; }
+}

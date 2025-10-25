@@ -1,0 +1,46 @@
+.filters {
+  background: transparent; /* «не выделяется», как просили */
+  display: grid;
+  gap: 18px;
+}
+
+.filters__section {
+  background: transparent;
+  border-radius: var(--radius-lg);
+  padding: 0;
+}
+
+.filters__label {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+}
+
+.filters__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filters__more {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary-600);
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background var(--tr-fast);
+}
+.filters__more:hover { background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+
+.filters__count {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.caret { display:inline-block; transform: translateY(1px); }
+.caret.up { transform: rotate(180deg) translateY(-1px); }

@@ -1,0 +1,152 @@
+.btn {
+  --btn-bg: var(--color-primary);
+  --btn-bg-hover: var(--color-primary-600);
+  --btn-border: var(--btn-bg);
+  --btn-text: #fff;
+  --btn-pad-y: 10px;
+  --btn-pad-x: 16px;
+  --btn-radius: var(--radius-lg);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: var(--btn-pad-y) var(--btn-pad-x);
+  border-radius: var(--btn-radius);
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1;
+  font-size: 14px;
+  transition: transform 60ms ease, filter var(--tr-fast), box-shadow var(--tr-fast), background var(--tr-fast), color var(--tr-fast), border-color var(--tr-fast);
+  user-select: none;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+
+  /* focus ring без синего outline браузера */
+  &:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn-bg) 25%, transparent);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.btn--block {
+    width: 100%;
+  }
+
+  &:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn__label { pointer-events: none; }
+  .btn__icon { display: inline-flex; }
+  .btn__icon.left  { margin-left: -2px; }
+  .btn__icon.right { margin-right: -2px; }
+
+  /* Спиннер */
+  &.is-loading {
+    pointer-events: none;
+  }
+  &.is-loading .btn__label { opacity: .0; }
+  &.is-loading .btn__spinner {
+    position: absolute;
+    width: 1.15em;
+    height: 1.15em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: btn-spin .8s linear infinite;
+  }
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- варианты ---------- */
+
+/* F I L L E D (заполнение) */
+.btn.btn--filled {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border-color: var(--btn-border);
+  box-shadow: var(--shadow-sm);
+
+  &:hover:not(:disabled) { background: var(--btn-bg-hover); }
+}
+
+/* O U T L I N E (с рамкой) */
+.btn.btn--outline {
+  background: transparent;
+  color: var(--btn-bg);
+  border-color: color-mix(in srgb, var(--btn-bg) 65%, #0000);
+  box-shadow: none;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--btn-bg) var(--alpha-ghost-hover), transparent);
+  }
+}
+
+/* G H O S T (без рамки и фона) */
+.btn.btn--ghost {
+  background: transparent;
+  color: var(--btn-bg);
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--btn-bg) var(--alpha-ghost), transparent);
+  }
+}
+
+/* ---------- размеры ---------- */
+.btn.btn--sm { --btn-pad-y: 8px; --btn-pad-x: 12px; font-size: 13px; }
+.btn.btn--md { --btn-pad-y: 10px; --btn-pad-x: 16px; font-size: 14px; }
+.btn.btn--lg { --btn-pad-y: 12px; --btn-pad-x: 20px; font-size: 16px; }
+
+/* ---------- скругления ---------- */
+.btn.btn--r-sm  { --btn-radius: var(--radius-sm); border-radius: var(--radius-sm); }
+.btn.btn--r-md  { --btn-radius: var(--radius-md); border-radius: var(--radius-md); }
+.btn.btn--r-lg  { --btn-radius: var(--radius-lg); border-radius: var(--radius-lg); }
+.btn.btn--r-pill{ --btn-radius: 999px; border-radius: 999px; }
+
+/* ---------- палитры (устанавливаем CSS-переменные для конкретного цвета) ---------- */
+.btn.btn--primary {
+  --btn-bg: var(--color-primary);
+  --btn-bg-hover: var(--color-primary-600);
+  --btn-border: var(--color-primary-600);
+  --btn-text: #fff;
+}
+
+.btn.btn--accent {
+  --btn-bg: var(--color-accent);
+  --btn-bg-hover: color-mix(in srgb, var(--color-accent) 85%, #000);
+  --btn-border: color-mix(in srgb, var(--color-accent) 85%, #000);
+  --btn-text: #06130e;
+}
+
+.btn.btn--neutral {
+  --btn-bg: var(--color-neutral);
+  --btn-bg-hover: var(--color-neutral-600);
+  --btn-border: var(--color-neutral-600);
+  --btn-text: #fff;
+}
+
+.btn.btn--danger {
+  --btn-bg: var(--color-danger);
+  --btn-bg-hover: var(--color-danger-600);
+  --btn-border: var(--color-danger-600);
+  --btn-text: #fff;
+}
+
+.btn.btn--warning {
+  --btn-bg: var(--color-warning);
+  --btn-bg-hover: var(--color-warning-600);
+  --btn-border: var(--color-warning-600);
+  --btn-text: #1f1300;
+}

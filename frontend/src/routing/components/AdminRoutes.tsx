@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import AdminLayout from '../../components/layout/AdminLayout'
 import LoginPage from '../../pages/admin/LoginPage'
-import DashboardPage from '../../pages/admin/DashboardPage'
 import ClientsPage from '../../pages/admin/ClientsPage'
 import EquipmentPage from '../../pages/admin/EquipmentPage'
 import RequestsPage from '../../pages/admin/RequestsPage'
@@ -12,6 +11,10 @@ import ManagersPage from '../../pages/admin/ManagersPage'
 const AdminRoutes: React.FC = () => {
     const { state } = useAuth()
 
+    if (state.isLoading) {
+        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>Загрузка...</div>
+    }
+
     return (
         <Routes>
             <Route path="/login" element={<LoginPage />} />
@@ -19,14 +22,13 @@ const AdminRoutes: React.FC = () => {
                 state.user ? (
                     <AdminLayout>
                         <Routes>
-                            <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-                            <Route path="/dashboard" element={<DashboardPage />} />
+                            <Route path="/requests" element={<RequestsPage />} />
                             <Route path="/clients" element={<ClientsPage />} />
                             <Route path="/equipment" element={<EquipmentPage />} />
-                            <Route path="/requests" element={<RequestsPage />} />
                             {state.user.role === 'admin' && (
                                 <Route path="/managers" element={<ManagersPage />} />
                             )}
+                            <Route path="/" element={<Navigate to="/admin/requests" replace />} />
                         </Routes>
                     </AdminLayout>
                 ) : (

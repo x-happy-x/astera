@@ -4,7 +4,7 @@ import type { AuthState, AuthAction, AuthContextType } from '../types/auth'
 
 const initialState: AuthState = {
     user: null,
-    isLoading: false,
+    isLoading: true,
     error: null
 }
 
@@ -101,21 +101,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             try {
                 const payload = JSON.parse(atob(token.split('.')[1]))
                 if (payload.exp > Date.now() / 1000) {
-                    dispatch({ 
-                        type: 'LOGIN_SUCCESS', 
-                        payload: { 
-                            token, 
-                            email: payload.email, 
-                            fullName: payload.fullName, 
-                            role: payload.role 
-                        } 
+                    dispatch({
+                        type: 'LOGIN_SUCCESS',
+                        payload: {
+                            token,
+                            email: payload.email,
+                            fullName: payload.fullName,
+                            role: payload.role
+                        }
                     })
                 } else {
                     localStorage.removeItem('authToken')
+                    dispatch({ type: 'LOGOUT' })
                 }
             } catch {
                 localStorage.removeItem('authToken')
+                dispatch({ type: 'LOGOUT' })
             }
+        } else {
+            dispatch({ type: 'LOGOUT' })
         }
     }, [])
 

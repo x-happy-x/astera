@@ -3,7 +3,7 @@ import axios, { AxiosError, type AxiosInstance, type InternalAxiosRequestConfig 
 const BASE_URL = '/api'
 
 class ApiClient {
-    private client: AxiosInstance
+    private readonly client: AxiosInstance
 
     constructor() {
         this.client = axios.create({
@@ -25,8 +25,6 @@ class ApiClient {
                     config.headers.Authorization = `Bearer ${token}`
                 }
 
-                const token = localStorage.getItem('authToken')
-
                 return config
             },
             (error) => Promise.reject(error)
@@ -36,10 +34,15 @@ class ApiClient {
         this.client.interceptors.response.use(
             (response) => response,
             (error: AxiosError<{ message?: string }>) => {
-                // 401 - редирект на логин
+                // 401 - редирект на логин только если это не сам запрос авторизации
                 if (error.response?.status === 401) {
-                    localStorage.removeItem('authToken')
-                    window.location.href = '/login'
+                    const url = error.config?.url || ''
+                    const isLoginRequest = url.includes('/login') || url.includes('/register')
+
+                    if (!isLoginRequest) {
+                        localStorage.removeItem('authToken')
+                        window.location.href = '/login'
+                    }
                 }
 
                 // Формируем понятное сообщение об ошибке

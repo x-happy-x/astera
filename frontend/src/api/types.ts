@@ -43,6 +43,7 @@ export interface HeatingRequestDto {
     tOut: number
     fuelType: FuelType
     notes?: string
+    status: HeatingRequestStatus
 }
 
 // Equipment Category
@@ -107,4 +108,148 @@ export interface HeatingRequestListParams {
 export interface SelectionParams {
     topN?: number
     includeAutomation?: boolean
+}
+
+// Selection (выбор клиента)
+export interface SelectionDto {
+    id: string
+    requestId: string
+    candidateId: string
+    pdfPath?: string
+    selectedAt: string
+}
+
+// Customer (клиент)
+export interface CustomerDto {
+    id: string
+    email: string
+    fullName: string
+    phone: string
+    organization: string
+    isActive: boolean
+    createdAt: string
+}
+
+export interface CustomerCreateDto {
+    email: string
+    fullName: string
+    phone: string
+    organization: string
+    password?: string
+}
+
+export interface CustomerUpdateDto {
+    email: string
+    fullName: string
+    phone: string
+    organization: string
+    isActive?: boolean
+}
+
+export interface CustomerPageDto {
+    customers: CustomerDto[]
+    totalCustomers: number
+    totalPages: number
+    currentPage: number
+    pageSize: number
+}
+
+// Equipment (оборудование)
+export interface EquipmentDto {
+    id: string
+    category: EquipmentCategory
+    brand: string
+    model: string
+    active: boolean
+    powerMinKw?: number
+    powerMaxKw?: number
+    flowMinM3h?: number
+    flowMaxM3h?: number
+    dnSize?: number
+    fuelType?: FuelType
+    connectionKey?: string
+    price: number
+    deliveryDays?: number
+}
+
+export interface EquipmentCreateDto {
+    category: EquipmentCategory
+    brand: string
+    model: string
+    active?: boolean
+    powerMinKw?: number
+    powerMaxKw?: number
+    flowMinM3h?: number
+    flowMaxM3h?: number
+    dnSize?: number
+    fuelType?: FuelType
+    connectionKey?: string
+    price: number
+    deliveryDays?: number
+}
+
+export interface EquipmentUpdateDto {
+    category: EquipmentCategory
+    brand: string
+    model: string
+    active?: boolean
+    powerMinKw?: number
+    powerMaxKw?: number
+    flowMinM3h?: number
+    flowMaxM3h?: number
+    dnSize?: number
+    fuelType?: FuelType
+    connectionKey?: string
+    price: number
+    deliveryDays?: number
+}
+
+export interface EquipmentPageDto {
+    equipment: EquipmentDto[]
+    totalEquipment: number
+    totalPages: number
+    currentPage: number
+    pageSize: number
+}
+
+// User (пользователь)
+export const UserRole = {
+    admin: 'admin' as const,
+    manager: 'manager' as const,
+    customer: 'customer' as const
+}
+
+export type UserRole = typeof UserRole[keyof typeof UserRole]
+
+export interface UserDto {
+    id: string
+    email: string
+    fullName: string
+    role: UserRole
+    isActive: boolean
+    createdAt: string
+}
+
+export interface UserCreateDto {
+    email: string
+    fullName: string
+    role: UserRole
+    password?: string
+    isActive?: boolean
+}
+
+export interface UserUpdateDto {
+    email: string
+    fullName: string
+    role: UserRole
+    password?: string
+    isActive?: boolean
+}
+
+export interface UserPageDto {
+    users: UserDto[]
+    totalUsers: number
+    totalPages: number
+    currentPage: number
+    pageSize: number
 }

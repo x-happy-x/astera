@@ -1,0 +1,151 @@
+/* базовые переменные — можно переопределять инлайном через props */
+.badge {
+  --bdg-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+  --bdg-fg: var(--color-text);
+  --bdg-bd: var(--color-border);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--bdg-bd);
+  background: var(--bdg-bg);
+  color: var(--bdg-fg);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+
+  &.badge--sm { padding: 2px 8px; font-size: 11px; }
+  &.badge--md { padding: 4px 10px; font-size: 12px; }
+  &.badge--lg { padding: 6px 12px; font-size: 14px; }
+
+  &.badge--r-md   { border-radius: var(--radius-md); }
+  &.badge--r-lg   { border-radius: var(--radius-lg); }
+  &.badge--r-pill { border-radius: 999px; }
+
+  /* fill-моды */
+  &.badge--soft   { /* по умолчанию — мягкий фон */ }
+  &.badge--solid  { --bdg-fg: #fff; }
+  &.badge--outline{
+    background: transparent;
+  }
+
+  /* предустановленные тона */
+  &.badge--neutral {
+    --bdg-bg: color-mix(in srgb, var(--color-text) 6%, transparent);
+    --bdg-bd: color-mix(in srgb, var(--color-text) 18%, transparent);
+    &.badge--solid { --bdg-bg: var(--color-text); }
+  }
+  &.badge--primary {
+    --bdg-bg: color-mix(in srgb, var(--color-primary) 15%, transparent);
+    --bdg-bd: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    &.badge--solid { --bdg-bg: var(--color-primary); }
+  }
+  &.badge--accent {
+    --bdg-bg: color-mix(in srgb, var(--color-accent) 18%, transparent);
+    --bdg-bd: color-mix(in srgb, var(--color-accent) 40%, transparent);
+    &.badge--solid { --bdg-bg: var(--color-accent); --bdg-fg: #06261b; }
+  }
+  &.badge--success {
+    --bdg-bg: color-mix(in srgb, #22c55e 18%, transparent);
+    --bdg-bd: color-mix(in srgb, #22c55e 40%, transparent);
+    &.badge--solid { --bdg-bg: #22c55e; }
+  }
+  &.badge--warning {
+    --bdg-bg: color-mix(in srgb, #f59e0b 18%, transparent);
+    --bdg-bd: color-mix(in srgb, #f59e0b 40%, transparent);
+    &.badge--solid { --bdg-bg: #f59e0b; --bdg-fg: #1f1300; }
+  }
+  &.badge--danger {
+    --bdg-bg: color-mix(in srgb, #ef4444 18%, transparent);
+    --bdg-bd: color-mix(in srgb, #ef4444 40%, transparent);
+    &.badge--solid { --bdg-bg: #ef4444; }
+  }
+
+  /* Tooltip */
+  .badge__tooltip {
+    --tt-bg: var(--color-bg);
+    --tt-fg: var(--color-text);
+    --tt-bd: var(--color-border);
+
+    position: absolute;
+    z-index: 10;
+    left: 50%;
+    transform: translate(-50%, -6px);
+    bottom: calc(100% + 8px);
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    background: var(--tt-bg);
+    color: var(--tt-fg);
+    border: 1px solid var(--tt-bd);
+    box-shadow: var(--shadow-sm);
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--tr-fast), transform var(--tr-fast);
+
+    /* стрелочка */
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      width: 10px; height: 10px;
+      background: var(--tt-bg);
+      border-left: 1px solid var(--tt-bd);
+      border-bottom: 1px solid var(--tt-bd);
+      transform: translate(-50%, -5px) rotate(45deg);
+    }
+  }
+
+  /* placements */
+  &.tt-top .badge__tooltip { bottom: calc(100% + 8px); left: 50%; transform: translate(-50%, -6px); }
+  &.tt-bottom .badge__tooltip {
+    top: calc(100% + 8px); bottom: auto; left: 50%;
+    transform: translate(-50%, 6px);
+    &::after {
+      top: -6px; left: 50%;
+      transform: translate(-50%, 5px) rotate(225deg);
+    }
+  }
+  &.tt-left .badge__tooltip {
+    right: calc(100% + 8px); left: auto; top: 50%; bottom: auto;
+    transform: translate(-6px, -50%);
+    &::after {
+      left: auto; right: -6px; top: 50%;
+      transform: translate(-5px, -50%) rotate(135deg);
+    }
+  }
+  &.tt-right .badge__tooltip {
+    left: calc(100% + 8px); top: 50%; bottom: auto;
+    transform: translate(6px, -50%);
+    &::after {
+      left: -6px; top: 50%;
+      transform: translate(5px, -50%) rotate(-45deg);
+    }
+  }
+
+  /* hover trigger */
+  &.has-tooltip:hover .badge__tooltip.by-hover {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  &.has-tooltip.tt-bottom:hover .badge__tooltip.by-hover { transform: translate(-50%, 0); }
+  &.has-tooltip.tt-left:hover .badge__tooltip.by-hover   { transform: translate(0, -50%); }
+  &.has-tooltip.tt-right:hover .badge__tooltip.by-hover  { transform: translate(0, -50%); }
+
+  /* click trigger */
+  &.is-open .badge__tooltip.by-click {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+  }
+  &.is-open.tt-bottom .badge__tooltip.by-click { transform: translate(-50%, 0); }
+  &.is-open.tt-left   .badge__tooltip.by-click { transform: translate(0, -50%); }
+  &.is-open.tt-right  .badge__tooltip.by-click { transform: translate(0, -50%); }
+}

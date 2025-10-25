@@ -67,17 +67,6 @@ export const authApi = {
     },
 
     /**
-     * Регистрация менеджера/админа
-     */
-    registerManager: async (data: ManagerRegistrationDto): Promise<AuthResponseDto> => {
-        const response = await apiClient.post<AuthResponseDto>(
-            `${BASE_PATH}/manager/register`,
-            data
-        )
-        return response.data
-    },
-
-    /**
      * Вход менеджера/админа
      */
     login: async (data: LoginDto): Promise<AuthResponseDto> => {

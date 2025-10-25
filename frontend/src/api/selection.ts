@@ -1,5 +1,5 @@
 import { apiClient } from './client'
-import type { ConfigurationCandidateDto, SelectionParams } from './types'
+import type { ConfigurationCandidateDto, SelectionParams, SelectionDto } from './types'
 
 const BASE_PATH = '/heating-requests'
 
@@ -7,26 +7,6 @@ const BASE_PATH = '/heating-requests'
  * API для подбора конфигураций
  */
 export const selectionApi = {
-    /**
-     * Превью конфигураций без сохранения
-     * Возвращает top-N вариантов для заявки
-     */
-    previewCandidates: async (
-        requestId: string,
-        params?: SelectionParams
-    ): Promise<ConfigurationCandidateDto[]> => {
-        const response = await apiClient.post<ConfigurationCandidateDto[]>(
-            `${BASE_PATH}/${requestId}/preview-candidates`,
-            null,
-            {
-                params: {
-                    topN: params?.topN ?? 5,
-                    includeAutomation: params?.includeAutomation ?? true
-                }
-            }
-        )
-        return response.data
-    },
 
     /**
      * Генерация и сохранение конфигураций
@@ -47,5 +27,33 @@ export const selectionApi = {
             }
         )
         return response.data
-    }
+    },
+
+    /**
+     * Зафиксировать выбор кандидата
+     */
+    select: async (
+        requestId: string,
+        candidateId: string,
+        pdfPath?: string
+    ): Promise<SelectionDto> => {
+        const response = await apiClient.post<SelectionDto>(
+            `${BASE_PATH}/${requestId}/selection`,
+            {
+                candidateId,
+                pdfPath
+            }
+        )
+        return response.data
+    },
+
+    /**
+     * Получить выбор по заявке
+     */
+    getByRequest: async (requestId: string): Promise<SelectionDto> => {
+        const response = await apiClient.get<SelectionDto>(
+            `${BASE_PATH}/${requestId}/selection`
+        )
+        return response.data
+    },
 }

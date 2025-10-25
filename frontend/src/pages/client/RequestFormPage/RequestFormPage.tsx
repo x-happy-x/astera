@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
-import { heatingRequestsApi, FuelType, type HeatingRequestCreateDto } from '../../../api'
-import Card from '../../../components/ui/Card'
+import React, {useEffect, useState} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
+import {FuelType, type HeatingRequestCreateDto, type HeatingRequestDto, heatingRequestsApi} from '../../../api'
 import './styles.scss'
+
+type FormStep = 1 | 2 | 3 | 4
 
 const RequestFormPage: React.FC = () => {
     const navigate = useNavigate()
-    const { id } = useParams<{ id: string }>()
+    const {id} = useParams<{ id: string }>()
     const isEditMode = !!id
 
+    const [currentStep, setCurrentStep] = useState<FormStep>(1)
     const [formData, setFormData] = useState<HeatingRequestCreateDto>({
         powerKw: 0,
         tIn: 0,
@@ -36,42 +38,66 @@ const RequestFormPage: React.FC = () => {
                 fuelType: request.fuelType,
                 notes: request.notes || ''
             })
+            setCurrentStep(4)
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Ошибка загрузки заявки')
         }
     }
 
+    const nextStep = () => {
+        if (currentStep < 4) {
+            setCurrentStep((prev) => (prev + 1) as FormStep)
+        }
+    }
+
+    const prevStep = () => {
+        if (currentStep > 1) {
+            setCurrentStep((prev) => (prev - 1) as FormStep)
+        }
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
+        const {name, value} = e.target
         setFormData(prev => ({
             ...prev,
             [name]: name === 'powerKw' || name === 'tIn' || name === 'tOut'
                 ? parseFloat(value) || 0
                 : value
         }))
-        setValidationErrors(prev => ({ ...prev, [name]: '' }))
+        setValidationErrors(prev => ({...prev, [name]: ''}))
         setError(null)
     }
 
-    const validate = (): boolean => {
+    const validateStep = (step: FormStep): boolean => {
         const errors: Record<string, string> = {}
 
-        if (formData.powerKw <= 0) {
-            errors.powerKw = 'Мощность должна быть больше 0'
-        }
-
-        if (formData.tIn <= formData.tOut) {
-            errors.tIn = 'Температура подачи должна быть больше температуры обратки'
+        switch (step) {
+            case 1:
+                if (formData.powerKw <= 0) {
+                    errors.powerKw = 'Мощность должна быть больше 0'
+                }
+                break
+            case 2:
+                break
+            case 3:
+                if (formData.tIn <= formData.tOut) {
+                    errors.tIn = 'Температура подачи должна быть больше температуры обратки'
+                }
+                break
         }
 
         setValidationErrors(errors)
         return Object.keys(errors).length === 0
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const handleNext = () => {
+        if (validateStep(currentStep)) {
+            nextStep()
+        }
+    }
 
-        if (!validate()) {
+    const handleSubmit = async () => {
+        if (!validateStep(currentStep)) {
             return
         }
 
@@ -79,12 +105,14 @@ const RequestFormPage: React.FC = () => {
         setError(null)
 
         try {
+            let heatingRequestDto: HeatingRequestDto;
+
             if (isEditMode && id) {
-                await heatingRequestsApi.update(id, formData)
+                heatingRequestDto = await heatingRequestsApi.update(id, formData);
             } else {
-                await heatingRequestsApi.create(formData)
+                heatingRequestDto = await heatingRequestsApi.create(formData)
             }
-            navigate('/client/requests')
+            navigate(`/client/requests/${heatingRequestDto.id}`)
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Ошибка сохранения заявки')
         } finally {
@@ -92,67 +120,102 @@ const RequestFormPage: React.FC = () => {
         }
     }
 
-    return (
-        <div className="request-form-page">
-            <div className="form-container">
-                <Card>
-                    <div className="form-header">
-                        <h2>{isEditMode ? 'Редактирование заявки' : 'Новая заявка'}</h2>
-                        <p>Заполните параметры системы отопления</p>
+    const renderStepContent = () => {
+        switch (currentStep) {
+            case 1:
+                return (
+                    <div className="step-content">
+                        <div className="step-icon">⚡</div>
+                        <h3 className="step-title">Мощность системы</h3>
+                        <p className="step-description">Укажите требуемую мощность системы отопления</p>
+                        <div className="form-group">
+                            <label htmlFor="powerKw">Мощность (кВт) *</label>
+                            <input
+                                type="number"
+                                id="powerKw"
+                                name="powerKw"
+                                value={formData.powerKw || ''}
+                                onChange={handleChange}
+                                required
+                                disabled={isLoading}
+                                step="0.1"
+                                min="0"
+                                placeholder="500"
+                                className={validationErrors.powerKw ? 'error' : ''}
+                                autoFocus
+                            />
+                            {validationErrors.powerKw && (
+                                <span className="field-error">{validationErrors.powerKw}</span>
+                            )}
+                        </div>
                     </div>
-
-                    {error && (
-                        <div className="error-message">{error}</div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="request-form">
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="powerKw">
-                                    Мощность (кВт) *
+                )
+            case 2:
+                return (
+                    <div className="step-content">
+                        <div className="step-icon">🔥</div>
+                        <h3 className="step-title">Тип топлива</h3>
+                        <p className="step-description">Выберите тип топлива для системы</p>
+                        <div className="form-group">
+                            <div className="fuel-options">
+                                <label
+                                    className={`fuel-option ${formData.fuelType === FuelType.NATURAL_GAS ? 'active' : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="fuelType"
+                                        value={FuelType.NATURAL_GAS}
+                                        checked={formData.fuelType === FuelType.NATURAL_GAS}
+                                        onChange={handleChange}
+                                        disabled={isLoading}
+                                    />
+                                    <div className="fuel-card">
+                                        <div className="fuel-icon">🌿</div>
+                                        <span>Природный газ</span>
+                                    </div>
                                 </label>
-                                <input
-                                    type="number"
-                                    id="powerKw"
-                                    name="powerKw"
-                                    value={formData.powerKw || ''}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={isLoading}
-                                    step="0.1"
-                                    min="0"
-                                    placeholder="500"
-                                    className={validationErrors.powerKw ? 'error' : ''}
-                                />
-                                {validationErrors.powerKw && (
-                                    <span className="field-error">{validationErrors.powerKw}</span>
-                                )}
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="fuelType">
-                                    Тип топлива *
+                                <label
+                                    className={`fuel-option ${formData.fuelType === FuelType.DIESEL ? 'active' : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="fuelType"
+                                        value={FuelType.DIESEL}
+                                        checked={formData.fuelType === FuelType.DIESEL}
+                                        onChange={handleChange}
+                                        disabled={isLoading}
+                                    />
+                                    <div className="fuel-card">
+                                        <div className="fuel-icon">🛢️</div>
+                                        <span>Дизель</span>
+                                    </div>
                                 </label>
-                                <select
-                                    id="fuelType"
-                                    name="fuelType"
-                                    value={formData.fuelType}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={isLoading}
-                                >
-                                    <option value={FuelType.NATURAL_GAS}>Природный газ</option>
-                                    <option value={FuelType.DIESEL}>Дизель</option>
-                                    <option value={FuelType.OTHER}>Другое</option>
-                                </select>
+                                <label
+                                    className={`fuel-option ${formData.fuelType === FuelType.OTHER ? 'active' : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="fuelType"
+                                        value={FuelType.OTHER}
+                                        checked={formData.fuelType === FuelType.OTHER}
+                                        onChange={handleChange}
+                                        disabled={isLoading}
+                                    />
+                                    <div className="fuel-card">
+                                        <div className="fuel-icon">⚙️</div>
+                                        <span>Другое</span>
+                                    </div>
+                                </label>
                             </div>
                         </div>
-
+                    </div>
+                )
+            case 3:
+                return (
+                    <div className="step-content">
+                        <div className="step-icon">🌡️</div>
+                        <h3 className="step-title">Температурные параметры</h3>
+                        <p className="step-description">Укажите температуру подачи и обратки</p>
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="tIn">
-                                    Температура подачи (°C) *
-                                </label>
+                                <label htmlFor="tIn">Температура подачи (°C) *</label>
                                 <input
                                     type="number"
                                     id="tIn"
@@ -169,11 +232,8 @@ const RequestFormPage: React.FC = () => {
                                     <span className="field-error">{validationErrors.tIn}</span>
                                 )}
                             </div>
-
                             <div className="form-group">
-                                <label htmlFor="tOut">
-                                    Температура обратки (°C) *
-                                </label>
+                                <label htmlFor="tOut">Температура обратки (°C) *</label>
                                 <input
                                     type="number"
                                     id="tOut"
@@ -187,39 +247,100 @@ const RequestFormPage: React.FC = () => {
                                 />
                             </div>
                         </div>
-
+                    </div>
+                )
+            case 4:
+                return (
+                    <div className="step-content">
+                        <div className="step-icon">📝</div>
+                        <h3 className="step-title">Дополнительная информация</h3>
+                        <p className="step-description">Добавьте примечания при необходимости</p>
                         <div className="form-group">
-                            <label htmlFor="notes">
-                                Примечание
-                            </label>
+                            <label htmlFor="notes">Примечание</label>
                             <textarea
                                 id="notes"
                                 name="notes"
                                 value={formData.notes}
                                 onChange={handleChange}
                                 disabled={isLoading}
-                                rows={4}
+                                rows={6}
                                 placeholder="Дополнительная информация о системе отопления..."
                             />
                         </div>
+                    </div>
+                )
+        }
+    }
 
-                        <div className="form-actions">
+    return (
+        <div className="request-form-page">
+            <div className="dialog-backdrop" onClick={() => navigate('/client/requests')}/>
+
+            <div className="dialog-container">
+                <div className="dialog-glass">
+                    <button
+                        className="dialog-close"
+                        onClick={() => navigate('/client/requests')}
+                        aria-label="Закрыть"
+                    >
+                        ✕
+                    </button>
+
+                    <div className="dialog-header">
+                        <h2>{isEditMode ? 'Редактирование заявки' : 'Новая заявка'}</h2>
+                        <div className="step-indicator">
+                            {[1, 2, 3, 4].map((step) => (
+                                <div
+                                    key={step}
+                                    className={`step-dot ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="error-message">{error}</div>
+                    )}
+
+                    <div className="dialog-body">
+                        {renderStepContent()}
+                    </div>
+
+                    <div className="dialog-footer">
+                        {currentStep > 1 && (
                             <button
-                                type="submit"
-                                className="btn btn-primary"
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={prevStep}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Сохранение...' : isEditMode ? 'Сохранить изменения' : 'Создать заявку'}
+                                Назад
                             </button>
-                            <Link
-                                to="/client/requests"
-                                className="btn btn-secondary"
+                        )}
+
+                        <div className="spacer"/>
+
+                        {currentStep < 4 ? (
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={handleNext}
+                                disabled={isLoading}
                             >
-                                Отмена
-                            </Link>
-                        </div>
-                    </form>
-                </Card>
+                                Далее
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? 'Сохранение...' : isEditMode ? 'Сохранить' : 'Создать заявку'}
+                            </button>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     )

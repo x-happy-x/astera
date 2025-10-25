@@ -2,6 +2,8 @@ package ru.astera.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 
@@ -28,6 +30,7 @@ public class ConfigComponent {
     private Equipment equipment;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false, columnDefinition = "equipment_category")
     private EquipmentCategory category;
 

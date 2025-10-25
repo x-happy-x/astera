@@ -1,21 +1,36 @@
-import React from 'react'
-import './styles.scss'
+import React from 'react';
+import cn from 'clsx';
+import './Card.style.scss';
 
-interface CardProps {
-    children: React.ReactNode
-    className?: string
-    title?: string
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+    padded?: boolean;        // внутренние отступы
+    hoverable?: boolean;     // подчёркнутый hover (тень/подсветка)
+    clickable?: boolean;     // меняет курсор и лёгкое смещение по клику
+    elevation?: 'sm' | 'md'; // сила тени
 }
 
-const Card: React.FC<CardProps> = ({ children, className = '', title }) => {
+const Card: React.FC<CardProps> = ({
+                                       children,
+                                       className,
+                                       padded = true,
+                                       hoverable = false,
+                                       clickable = false,
+                                       elevation = 'md',
+                                       ...rest
+                                   }) => {
     return (
-        <div className={`card ${className}`}>
-            {title && <h3 className="card-title">{title}</h3>}
-            <div className="card-content">
-                {children}
-            </div>
+        <div
+            className={cn(
+                'card',
+                `card--${elevation}`,
+                {'card--padded': padded, 'card--hoverable': hoverable, 'card--clickable': clickable},
+                className
+            )}
+            {...rest}
+        >
+            {children}
         </div>
-    )
-}
+    );
+};
 
-export default Card
+export default Card;

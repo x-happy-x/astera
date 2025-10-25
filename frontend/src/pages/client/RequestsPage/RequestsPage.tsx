@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { heatingRequestsApi, type HeatingRequestDto, HeatingRequestStatus, FuelType } from '../../../api'
+import React, {useEffect, useState} from 'react'
+import {Link, useNavigate} from 'react-router-dom'
+import {Filter, LogOut, Plus} from 'lucide-react'
+import {FuelType, type HeatingRequestDto, heatingRequestsApi, HeatingRequestStatus} from '../../../api'
 import Card from '../../../components/ui/Card'
 import './styles.scss'
+import RequestCard from "./components";
 
 const RequestsPage: React.FC = () => {
     const navigate = useNavigate()
@@ -18,7 +20,10 @@ const RequestsPage: React.FC = () => {
         setIsLoading(true)
         setError(null)
         try {
+            const customerId = localStorage.getItem('userId') || undefined
+
             const page = await heatingRequestsApi.list({
+                customerId,
                 status: filters.status,
                 fuelType: filters.fuelType,
                 page: 0,
@@ -41,16 +46,6 @@ const RequestsPage: React.FC = () => {
         localStorage.removeItem('userType')
         navigate('/client/login')
     }
-
-    const getFuelTypeLabel = (fuelType: FuelType) => {
-        const fuelMap = {
-            [FuelType.NATURAL_GAS]: 'Газ',
-            [FuelType.DIESEL]: 'Дизель',
-            [FuelType.OTHER]: 'Другое'
-        }
-        return fuelMap[fuelType]
-    }
-
     return (
         <div className="requests-page">
             <div className="page-header">
@@ -60,35 +55,23 @@ const RequestsPage: React.FC = () => {
                 </div>
                 <div className="header-actions">
                     <Link to="/client/requests/new" className="btn btn-primary">
-                        + Создать заявку
+                        <Plus size={18}/>
+                        Создать заявку
                     </Link>
                     <button onClick={handleLogout} className="btn btn-secondary">
+                        <LogOut size={18}/>
                         Выйти
                     </button>
                 </div>
             </div>
 
-            <div className="filters">
-                <div className="filter-group">
-                    <label>Статус:</label>
-                    <select
-                        value={filters.status || ''}
-                        onChange={(e) => setFilters({ ...filters, status: e.target.value as HeatingRequestStatus || undefined })}
-                    >
-                        <option value="">Все</option>
-                        <option value={HeatingRequestStatus.DRAFT}>Черновик</option>
-                        <option value={HeatingRequestStatus.IN_PROGRESS}>В работе</option>
-                        <option value={HeatingRequestStatus.CANDIDATES_READY}>Варианты готовы</option>
-                        <option value={HeatingRequestStatus.COMPLETED}>Завершено</option>
-                        <option value={HeatingRequestStatus.CANCELLED}>Отменено</option>
-                    </select>
-                </div>
-
+            <div className="filters glass-card">
+                <Filter size={18} className="filter-icon"/>
                 <div className="filter-group">
                     <label>Топливо:</label>
                     <select
                         value={filters.fuelType || ''}
-                        onChange={(e) => setFilters({ ...filters, fuelType: e.target.value as FuelType || undefined })}
+                        onChange={(e) => setFilters({...filters, fuelType: e.target.value as FuelType || undefined})}
                     >
                         <option value="">Все</option>
                         <option value={FuelType.NATURAL_GAS}>Газ</option>
@@ -119,50 +102,8 @@ const RequestsPage: React.FC = () => {
 
             {!isLoading && !error && requests.length > 0 && (
                 <div className="requests-grid">
-                    {requests.map((request) => (
-                        <Card key={request.id} className="request-card">
-                            <div className="request-header">
-                                <div className="request-id">
-                                    Заявка #{request.id.slice(0, 8)}
-                                </div>
-                            </div>
-
-                            <div className="request-details">
-                                <div className="detail-row">
-                                    <span className="label">Мощность:</span>
-                                    <span className="value">{request.powerKw} кВт</span>
-                                </div>
-                                <div className="detail-row">
-                                    <span className="label">Температура:</span>
-                                    <span className="value">{request.tIn}°C → {request.tOut}°C</span>
-                                </div>
-                                <div className="detail-row">
-                                    <span className="label">Топливо:</span>
-                                    <span className="value">{getFuelTypeLabel(request.fuelType)}</span>
-                                </div>
-                                {request.notes && (
-                                    <div className="detail-row">
-                                        <span className="label">Примечание:</span>
-                                        <span className="value">{request.notes}</span>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="request-actions">
-                                <Link
-                                    to={`/client/requests/${request.id}`}
-                                    className="btn btn-sm btn-primary"
-                                >
-                                    Открыть
-                                </Link>
-                                <Link
-                                    to={`/client/requests/${request.id}/edit`}
-                                    className="btn btn-sm btn-secondary"
-                                >
-                                    Редактировать
-                                </Link>
-                            </div>
-                        </Card>
+                    {requests.map((r) => (
+                        <RequestCard key={r.id} data={r}/>
                     ))}
                 </div>
             )}

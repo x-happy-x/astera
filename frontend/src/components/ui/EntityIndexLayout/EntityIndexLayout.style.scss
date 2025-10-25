@@ -1,0 +1,20 @@
+.entity-index {
+  display: grid;
+  gap: 16px;
+}
+
+.ei__create {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elev);
+  border-radius: var(--radius-lg);
+  padding: var(--gap-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.ei__filters {
+  /* без доп. подложек: фон страницы */
+}
+
+.ei__content {
+  /* таблица/контент на обычном фоне — без Card */
+}

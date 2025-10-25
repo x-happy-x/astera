@@ -1,0 +1,66 @@
+.fb {
+  display: grid;
+  gap: 10px;
+}
+
+.fb__header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.fb__title {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.fb__right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Группы «с новой строки» */
+.fb__groups {
+  display: grid;
+  gap: 10px;
+}
+
+.fb__group-wrap {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.fb__group {
+  display: grid;
+  gap: 8px;
+}
+
+.fb__group-title {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.fb__group-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* поле поиска */
+.fb__search {
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0 12px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  transition: box-shadow var(--tr-fast), border-color var(--tr-fast);
+}
+
+.fb__search:focus {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, var(--color-border));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 18%, transparent);
+}

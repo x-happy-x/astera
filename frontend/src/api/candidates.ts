@@ -1,34 +1,26 @@
 import { apiClient } from './client'
-import type { ConfigurationCandidateDto, ConfigurationComponentDto } from './types'
+import type { ConfigurationCandidateDto } from './types'
 
 /**
  * API для работы с кандидатами конфигураций
  */
 export const candidatesApi = {
     /**
-     * Получить всех кандидатов для заявки
+     * Превью кандидатов без сохранения
      */
-    getByRequest: async (
+    preview: async (
         requestId: string,
-        withComponents = true
+        topN = 3,
+        includeAutomation = true
     ): Promise<ConfigurationCandidateDto[]> => {
-        const response = await apiClient.get<ConfigurationCandidateDto[]>(
-            `/heating-requests/${requestId}/candidates`,
+        const response = await apiClient.post<ConfigurationCandidateDto[]>(
+            `/heating-requests/${requestId}/preview-candidates`,
+            null,
             {
-                params: { withComponents }
+                params: { topN, includeAutomation }
             }
         )
         return response.data
-    },
-
-    /**
-     * Заменить всех кандидатов для заявки
-     */
-    replaceForRequest: async (
-        requestId: string,
-        candidates: ConfigurationCandidateDto[]
-    ): Promise<void> => {
-        await apiClient.put(`/heating-requests/${requestId}/candidates`, candidates)
     },
 
     /**
@@ -52,15 +44,5 @@ export const candidatesApi = {
      */
     delete: async (candidateId: string): Promise<void> => {
         await apiClient.delete(`/candidates/${candidateId}`)
-    },
-
-    /**
-     * Получить компоненты кандидата
-     */
-    getComponents: async (candidateId: string): Promise<ConfigurationComponentDto[]> => {
-        const response = await apiClient.get<ConfigurationComponentDto[]>(
-            `/candidates/${candidateId}/components`
-        )
-        return response.data
     }
 }

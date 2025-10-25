@@ -1,0 +1,106 @@
+/* опирается на ваши глобальные переменные :root */
+
+.tp {
+  --tp-h: var(--header-height);
+  --tp-px: var(--container-padding-x);
+  --tp-gap: var(--gap-md);
+
+  position: relative;
+  width: 100%;
+  background: var(--color-bg);
+  color: var(--color-text);
+  height: var(--tp-h);
+  z-index: var(--z-header);
+
+  /* sticky / fixed */
+  &.tp--sticky {
+    position: sticky;
+    top: 0;
+  }
+
+  &.tp--fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  &.tp--blur {
+    background: var(--color-bg-elev);
+    backdrop-filter: var(--backdrop-blur);
+  }
+
+  &.tp--bordered {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  &.tp--shadow {
+    box-shadow: var(--shadow-sm);
+  }
+
+  &.tp--dense {
+    --tp-h: 48px;
+  }
+
+  /* ширина контейнера */
+  & .tp__inner {
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 var(--tp-px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* центр всегда по центру */
+    align-items: center;
+    gap: var(--tp-gap);
+    max-width: 1280px; /* для page */
+  }
+
+  &.tp--fluid .tp__inner {
+    max-width: none;
+  }
+
+  .tp__left {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0; /* чтобы текст обрезался, если нужно */
+    justify-self: start; /* прижать к левому краю */
+  }
+
+  .tp__right {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-md);
+    min-width: 0; /* чтобы текст обрезался, если нужно */
+    justify-self: end; /* прижать к правому краю */
+  }
+
+  .tp__center {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+  }
+
+  /* полезные преднастройки типографики */
+  .tp__title {
+    font-size: var(--font-size-title);
+    font-weight: var(--font-weight-title);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tp__muted {
+    color: var(--color-muted);
+  }
+
+  /* мобильные отступы */
+  @media (max-width: 768px) {
+    --tp-px: 12px;
+    .tp__inner {
+      gap: var(--gap-sm);
+    }
+  }
+}

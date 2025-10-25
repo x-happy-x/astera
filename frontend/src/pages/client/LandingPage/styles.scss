@@ -1,121 +1,213 @@
+/* Animations */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Main Container */
 .landing-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 100vh;
+  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow: hidden;
+}
 
-  .landing-container {
-    width: 100%;
-    max-width: 800px;
-    text-align: center;
+/* Container */
+.landing-container {
+  width: 100%;
+  max-width: 600px;
+}
 
-    .landing-header {
-      margin-bottom: 40px;
-      color: white;
+/* Hero Section */
+.landing-hero {
+  text-align: center;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.6s ease;
 
-      h1 {
-        font-size: 3rem;
-        font-weight: 700;
-        margin: 0 0 20px 0;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      }
+  &__badge {
+    display: inline-block;
+    padding: 8px 24px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    color: #fff;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
 
-      .landing-subtitle {
-        font-size: 1.2rem;
-        opacity: 0.9;
-        margin: 0;
-        font-weight: 300;
-      }
+  &__title {
+    font-size: 48px;
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 16px;
+    line-height: 1.2;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+    @media (max-width: 768px) {
+      font-size: 36px;
     }
 
-    .landing-content {
-      .welcome-card {
-        h2 {
-          color: #2c3e50;
-          margin-bottom: 20px;
-          font-size: 1.8rem;
-        }
+    @media (max-width: 480px) {
+      font-size: 28px;
+    }
+  }
 
-        p {
-          color: #666;
-          line-height: 1.6;
-          margin-bottom: 30px;
-          font-size: 1.1rem;
-        }
+  &__subtitle {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    font-weight: 500;
 
-        .action-buttons {
-          display: flex;
-          gap: 20px;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          .btn {
-            padding: 14px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            display: inline-block;
-            min-width: 200px;
-
-            &.btn-primary {
-              background-color: #3498db;
-              color: white;
-
-              &:hover {
-                background-color: #2980b9;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-              }
-            }
-
-            &.btn-secondary {
-              background-color: transparent;
-              color: #3498db;
-              border: 2px solid #3498db;
-
-              &:hover {
-                background-color: #3498db;
-                color: white;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-              }
-            }
-          }
-        }
-      }
+    @media (max-width: 768px) {
+      font-size: 16px;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .landing-page {
-    .landing-container {
-      .landing-header {
-        h1 {
-          font-size: 2rem;
-        }
+/* CTA Section */
+.landing-cta {
+  animation: fadeInUp 0.6s ease 0.2s backwards;
 
-        .landing-subtitle {
-          font-size: 1rem;
-        }
-      }
+  &__card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 48px 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 
-      .landing-content {
-        .welcome-card {
-          .action-buttons {
-            flex-direction: column;
-            align-items: center;
-
-            .btn {
-              min-width: 250px;
-            }
-          }
-        }
-      }
+    @media (max-width: 600px) {
+      padding: 36px 24px;
     }
+  }
+
+  &__title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 0 0 32px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    @media (max-width: 768px) {
+      font-size: 28px;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  &__admin {
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  width: 100%;
+
+  &--primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5);
+    }
+  }
+
+  &--secondary {
+    background: #fff;
+    color: #667eea;
+    border: 2px solid #667eea;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      background: #667eea;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.admin-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  &:hover {
+    color: #764ba2;
+    transform: translateX(2px);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+/* Footer */
+.landing-footer {
+  text-align: center;
+  padding: 32px 20px 0;
+  animation: fadeInUp 0.6s ease 0.4s backwards;
+
+  p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 13px;
+    margin: 0;
+    font-weight: 500;
   }
 }

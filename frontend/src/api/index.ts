@@ -10,8 +10,11 @@ export { heatingRequestsApi } from './heatingRequests'
 export { selectionApi } from './selection'
 export { candidatesApi } from './candidates'
 export { authApi } from './auth'
+export { customersApi } from './customers'
+export { equipmentApi } from './equipment'
+export { usersApi } from './users'
 
-export { FuelType, HeatingRequestStatus, EquipmentCategory } from './types'
+export { FuelType, HeatingRequestStatus, EquipmentCategory, UserRole } from './types'
 
 export type {
     HeatingRequestCreateDto,
@@ -21,7 +24,20 @@ export type {
     ConfigurationCandidateDto,
     ConfigurationComponentDto,
     SelectionParams,
-    Page
+    SelectionDto,
+    Page,
+    CustomerDto,
+    CustomerCreateDto,
+    CustomerUpdateDto,
+    CustomerPageDto,
+    EquipmentDto,
+    EquipmentCreateDto,
+    EquipmentUpdateDto,
+    EquipmentPageDto,
+    UserDto,
+    UserCreateDto,
+    UserUpdateDto,
+    UserPageDto
 } from './types'
 
 export type {

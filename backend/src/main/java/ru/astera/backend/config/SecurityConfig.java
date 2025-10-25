@@ -30,8 +30,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/manager/register").hasRole("admin")
-                        .requestMatchers("/api/selection/**").hasRole("customer")
-                        .requestMatchers("/api/heating-requests/**").hasRole("customer")
+                        .requestMatchers("/api/selections/**").hasRole("customer")
+                        .requestMatchers("/api/heating-requests/**").hasAnyRole("customer", "manager", "admin")
                         .requestMatchers("/api/candidates/**").hasRole("customer")
                         .requestMatchers("/api/admin/**").hasAnyRole("admin", "manager")
                         .requestMatchers("/api/auth/**").permitAll()
