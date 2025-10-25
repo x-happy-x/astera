@@ -1,7 +1,6 @@
-version: "3.9"
-
 services:
 
+  # локальная БД включается профилем, чтобы на PROD не поднималась
   postgres:
     image: postgres:16-alpine
     container_name: astera-db
@@ -18,16 +17,14 @@ services:
       test: [ "CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 3s
-      retries: 30
+      retries: 20
 
   backend:
-    image: astera-backend:local
+    image: ${IMAGE_REGISTRY}/backend:${IMAGE_TAG:-latest}
     container_name: astera-backend
-    depends_on:
-      postgres:
-        condition: service_healthy
+    env_file: .env
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
       APP_DB_HOST: ${APP_DB_HOST}
       APP_DB_PORT: ${APP_DB_PORT}
       APP_DB_NAME: ${APP_DB_NAME}
@@ -36,21 +33,23 @@ services:
       SERVER_PORT: ${APP_SERVER_PORT}
       JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "${APP_SERVER_PORT}:8080"
+      - "${APP_SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl -fsS http://localhost:8080/actuator/health >/dev/null || exit 1" ]
-      interval: 5s
+      test: [ "CMD-SHELL","curl -fsS http://localhost:8080/actuator/health || exit 1" ]
+      interval: 10s
       timeout: 3s
-      retries: 30
+      retries: 20
 
   frontend:
-    image: astera-frontend:local
-    container_name: astera-frontend
+    image: ${IMAGE_REGISTRY}/frontend:${IMAGE_TAG:-latest}
+    ports:
+      - "${NGINX_HTTP_PORT:-8080}:80"
     depends_on:
       backend:
         condition: service_healthy
-    ports:
-      - "${NGINX_HTTP_PORT}:80"
     healthcheck:
       test: [ "CMD-SHELL", "curl -fsS http://localhost/ >/dev/null || exit 1" ]
       interval: 5s

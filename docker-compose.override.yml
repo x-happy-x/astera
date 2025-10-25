@@ -1,0 +1,8 @@
+services:
+  backend:
+    image: astera-backend:local
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+
+  frontend:
+    image: astera-frontend:local

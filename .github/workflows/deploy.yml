@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -35,6 +34,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Backend: jar build (чтобы Docker слой кешировался корректно)
       - name: Build backend jar
         run: |
           cd backend
@@ -68,15 +68,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Upload compose
+      - name: Upload compose files
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ vars.SSH_PORT }}
-          source: "docker-compose.yml"
-          target: "${{ vars.DEPLOY_DIR }}"
+          source: |
+            docker-compose.yml
+          target: ${{ vars.DEPLOY_DIR }}
           strip_components: 0
 
       - name: Sanity check env
@@ -99,17 +100,33 @@ jobs:
           script_stop: true
           script: |
             set -euo pipefail
-            mkdir -p "${{ vars.DEPLOY_DIR }}"
             cd "${{ vars.DEPLOY_DIR }}"
 
-            echo "${{ secrets.GHCR_TOKEN }}" \
-              | docker login ghcr.io -u "${{ vars.GHCR_USERNAME }}" --password-stdin
+            # Environment check
+            if [ ! -f .env ]; then
+              echo ".env not found in $PWD"; exit 1;
+            fi
 
-            echo "IMAGE_TAG=${{ env.IMAGE_TAG }}" > .env
+            # Update enviroment variables
+            ensure_var() { key="$1"; val="$2"; if grep -q "^${key}=" .env; then sed -i "s|^${key}=.*|${key}=${val}|" .env; else echo "${key}=${val}" >> .env; fi; }
+            ensure_var IMAGE_REGISTRY "ghcr.io/${{ github.repository }}"
+            ensure_var IMAGE_TAG "${{ env.IMAGE_TAG }}"
 
+            # Authenticate
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ vars.GHCR_USERNAME }}" --password-stdin
+
+            # Update
             docker compose pull
             docker compose up -d --remove-orphans
 
-            until curl -fsS http://localhost:8080/actuator/health; do sleep 2; done
+            # Health check
+            echo "Waiting for backend to be healthy..."
+            for i in {1..30}; do
+              cid=$(docker compose ps -q backend || true)
+              [ -n "$cid" ] || { sleep 2; continue; }
+              state=$(docker inspect --format='{{json .State.Health.Status}}' "$cid" 2>/dev/null || echo 'null')
+              [ "$state" = "\"healthy\"" ] && { echo "Backend is healthy."; break; }
+              sleep 2
+            done
 
             docker system prune -f
