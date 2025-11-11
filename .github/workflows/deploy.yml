@@ -1,4 +1,4 @@
-name: Build & Deploy Astera
+name: build & deploy
 
 on:
   push:
@@ -34,7 +34,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Backend: jar build (чтобы Docker слой кешировался корректно)
       - name: Build backend jar
         run: |
           cd backend
